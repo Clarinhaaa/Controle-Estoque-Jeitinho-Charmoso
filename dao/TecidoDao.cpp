@@ -140,10 +140,28 @@ bool TecidoDao::update(TecidoModel* tecido)
     return (exec) ? true : false;
 }
 
+// verifica se o tecido esta vinculado a alguma roupa
+bool TecidoDao::isUsadoEmRoupa(int id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT COUNT(*) FROM Roupa WHERE id_tecido = :id;");
+    query.bindValue(":id", id);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toInt() > 0;
+    }
+
+    return false;
+}
+
 // remove um tecido do banco pelo id
 // metodo adicionado para implementar o RF018 - remocao de tecidos
 bool TecidoDao::remove(int id)
 {
+    if (isUsadoEmRoupa(id)) {
+        return false;
+    }
+
     QSqlQuery query;
     query.prepare("DELETE FROM Tecido WHERE id_tecido = :id;");
     query.bindValue(":id", id);
