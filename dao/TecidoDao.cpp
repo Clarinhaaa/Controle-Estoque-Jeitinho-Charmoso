@@ -1,7 +1,7 @@
 #include "TecidoDao.h"
 #include <QSqlError>
 
-// Busca todos os tecidos cadastrados
+// busca todos os tecidos cadastrados
 QList<TecidoModel*> TecidoDao::getAll()
 {
     QSqlQuery query;
@@ -23,6 +23,7 @@ QList<TecidoModel*> TecidoDao::getAll()
     return listTecido;
 }
 
+// busca todos os tecidos que ainda possuem estoque disponivel
 QList<TecidoModel*> TecidoDao::getAllAvailable()
 {
     QSqlQuery query;
@@ -45,7 +46,7 @@ QList<TecidoModel*> TecidoDao::getAllAvailable()
     return listTecido;
 }
 
-// Busca um tecido pelo ID
+// busca um tecido pelo id
 TecidoModel* TecidoDao::getById(int id)
 {
     QSqlQuery query;
@@ -67,18 +68,22 @@ TecidoModel* TecidoDao::getById(int id)
     return tecido;
 }
 
-// Busca todos os valores de uma coluna
-QList<TecidoModel*> TecidoDao::getByColumn(const QString& coluna, QVariant valor) {
+// busca tecidos usando uma coluna especifica como filtro
+QList<TecidoModel*> TecidoDao::getByColumn(const QString& coluna, QVariant valor)
+{
     QSqlQuery query;
+
     if (coluna == "estampa_tecido") {
         query.prepare(QString("SELECT * FROM Tecido WHERE %1 LIKE :valor;").arg(coluna));
         query.bindValue(":valor", QString("%%1%").arg(valor.toString()));
     } else {
         if (coluna == "material_tecido") {
             query.prepare(QString("SELECT * FROM Tecido WHERE %1 = :valor;").arg(coluna));
-        } else { // coluna == "metros_tecido" OU "custo_tecido"
+        } else {
+            // coluna == "metros_tecido" ou "custo_tecido"
             query.prepare(QString("SELECT * FROM Tecido WHERE %1 >= :valor;").arg(coluna));
         }
+
         query.bindValue(":valor", valor);
     }
 
@@ -94,13 +99,12 @@ QList<TecidoModel*> TecidoDao::getByColumn(const QString& coluna, QVariant valor
         tecido->setCusto(query.value(4).toFloat());
 
         listTecido.append(tecido);
-        delete tecido;
     }
 
     return listTecido;
 }
 
-// Insere um tecido novo
+// insere um tecido novo no banco
 bool TecidoDao::insert(TecidoModel* tecido)
 {
     QSqlQuery query;
@@ -110,14 +114,17 @@ bool TecidoDao::insert(TecidoModel* tecido)
     query.bindValue(":material", tecido->getMaterial());
     query.bindValue(":metros", tecido->getMetros());
     query.bindValue(":custo", tecido->getCusto());
+
     bool exec = query.exec();
 
     return (exec) ? true : false;
 }
 
+// atualiza os dados de um tecido existente
 bool TecidoDao::update(TecidoModel* tecido)
 {
     bool exec = false;
+
     if (tecido != nullptr) {
         QSqlQuery query;
         query.prepare("UPDATE Tecido SET estampa_tecido = :estampa, material_tecido = :material, metros_tecido = :metros, custo_tecido = :custo WHERE id_tecido = :id;");
@@ -126,8 +133,22 @@ bool TecidoDao::update(TecidoModel* tecido)
         query.bindValue(":material", tecido->getMaterial());
         query.bindValue(":metros", tecido->getMetros());
         query.bindValue(":custo", tecido->getCusto());
+
         exec = query.exec();
     }
+
+    return (exec) ? true : false;
+}
+
+// remove um tecido do banco pelo id
+// metodo adicionado para implementar o RF018 - remocao de tecidos
+bool TecidoDao::remove(int id)
+{
+    QSqlQuery query;
+    query.prepare("DELETE FROM Tecido WHERE id_tecido = :id;");
+    query.bindValue(":id", id);
+
+    bool exec = query.exec();
 
     return (exec) ? true : false;
 }
