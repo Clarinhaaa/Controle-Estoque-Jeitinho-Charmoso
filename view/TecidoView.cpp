@@ -232,7 +232,6 @@ void TecidoView::gerenciarEstoque() {
 }
 
 // remove um tecido do banco pelo id
-// metodo adicionado para implementar o RF018 - remocao de tecidos
 void TecidoView::remover()
 {
     out << "\033[H\033[J";
