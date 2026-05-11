@@ -154,6 +154,24 @@ bool TecidoDao::isUsadoEmRoupa(int id)
     return false;
 }
 
+// busca os ids das roupas vinculadas a um tecido
+QList<int> TecidoDao::getRoupasVinculadas(int id)
+{
+    QList<int> roupas;
+
+    QSqlQuery query;
+    query.prepare("SELECT id_roupa FROM Roupa WHERE id_tecido = :id;");
+    query.bindValue(":id", id);
+
+    if (query.exec()) {
+        while (query.next()) {
+            roupas.append(query.value(0).toInt());
+        }
+    }
+
+    return roupas;
+}
+
 // remove um tecido do banco pelo id
 // metodo adicionado para implementar o RF018 - remocao de tecidos
 bool TecidoDao::remove(int id)

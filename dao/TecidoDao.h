@@ -34,6 +34,9 @@ public:
     // verifica se o tecido esta vinculado a alguma roupa
     bool isUsadoEmRoupa(int id);
 
+    // busca os ids das roupas vinculadas a um tecido
+    QList<int> getRoupasVinculadas(int id);
+
     // remove um tecido do banco pelo id
     // metodo adicionado para implementar o RF018 - remocao de tecidos
     bool remove(int id);
