@@ -49,7 +49,7 @@ void TecidoView::load() {
             break;
         default:
             out << "\033[H\033[J";
-            out << "[AVISO] Resposta invalida. Tente novamente:\n";
+            out << "[AVISO] Resposta inválida. Tente novamente:\n";
             break;
         }
     }
@@ -62,8 +62,14 @@ TecidoModel* TecidoView::validarId() {
     QString id = in.readLine();
     validarVazio(id);
 
-    while (!id.toInt() || id.toInt() < 0) {
-        out << "Escreva um numero positivo. Tente novamente:";
+    while (!id.toInt()) {
+        out << "Escreva um número. Tente novamente:";
+        out.flush();
+        id = in.readLine();
+    }
+
+    while (id.toInt() < 0) {
+        out << "Escreva um número positivo. Tente novamente:";
         out.flush();
         id = in.readLine();
     }
@@ -87,7 +93,7 @@ void TecidoView::form(bool isEdicao) {
         novoTecido = validarId();
 
         if (novoTecido == nullptr) {
-            out << "\nID invalido. Busque o ID correto.";
+            out << "\nID inválido. Busque o ID correto.";
             delete novoTecido;
             retornar();
             return;
@@ -118,8 +124,14 @@ void TecidoView::form(bool isEdicao) {
         QString metros = in.readLine();
         validarVazio(metros);
 
-        while (!metros.toFloat() || metros.toFloat() < 0) {
-            out << "Escreva um numero positivo. Tente novamente:";
+        while (!metros.toFloat()) {
+            out << "Escreva um número. Tente novamente:";
+            out.flush();
+            metros = in.readLine();
+        }
+
+        while (metros.toFloat() < 0) {
+            out << "Escreva um número positivo. Tente novamente:";
             out.flush();
             metros = in.readLine();
         }
@@ -134,7 +146,7 @@ void TecidoView::form(bool isEdicao) {
     validarVazio(custo);
 
     while (!custo.toFloat() || custo.toFloat() < 0) {
-        out << "Escreva um numero positivo. Tente novamente:";
+        out << "Escreva um número positivo. Tente novamente:";
         out.flush();
         custo = in.readLine();
     }
@@ -146,13 +158,13 @@ void TecidoView::form(bool isEdicao) {
         if (teciDao.insert(novoTecido)) {
             out << "[SUCESSO] Tecido cadastrado!";
         } else {
-            out << "[ERRO] Nao foi possivel realizar o cadastro.";
+            out << "[ERRO] Nãoo foi possível realizar o cadastro.";
         }
     } else {
         if (teciDao.update(novoTecido)) {
             out << "[SUCESSO] Tecido atualizado!";
         } else {
-            out << "[ERRO] Nao foi possivel atualizar o tecido.";
+            out << "[ERRO] Não foi possível atualizar o tecido.";
         }
     }
 
@@ -244,7 +256,7 @@ void TecidoView::remover()
     TecidoModel* tecidoAtual = validarId();
 
     if (tecidoAtual == nullptr) {
-        out << "\nID invalido. Busque o ID correto.";
+        out << "\n[AVISO] ID inválido. Busque o ID correto.";
         delete tecidoAtual;
         retornar();
         return;
@@ -258,17 +270,17 @@ void TecidoView::remover()
     if (teciDao.isUsadoEmRoupa(tecidoAtual->getId())) {
         QList<int> roupasVinculadas = teciDao.getRoupasVinculadas(tecidoAtual->getId());
 
-        out << "\n[AVISO] Nao e possivel remover este tecido, pois ele esta vinculado a uma ou mais roupas cadastradas.\n";
+        out << "\n[AVISO] Não é possível remover este tecido, pois ele esta vinculado a uma ou mais roupas cadastradas.\n";
 
         if (!roupasVinculadas.isEmpty()) {
             out << "\nRoupas vinculadas:\n";
 
-            for (int idRoupa : roupasVinculadas) {
-                out << "- ID da roupa: " << idRoupa << "\n";
+            for (int i = 0; i < roupasVinculadas.length(); ++i) {
+                out << "~ ID da " << (i + 1) << "a roupa: " << roupasVinculadas[i] << "\n";
             }
         }
 
-        out << "\nPara remover este tecido, remova ou edite essas roupas primeiro na pagina de roupas.";
+        out << "Para remover este tecido, remova ou edite essas roupas primeiro na página de roupas.";
 
         delete tecidoAtual;
         retornar();
@@ -285,10 +297,10 @@ void TecidoView::remover()
         if (teciDao.remove(tecidoAtual->getId())) {
             out << "\n[SUCESSO] Tecido removido!";
         } else {
-            out << "\n[ERRO] Nao foi possivel remover o tecido.";
+            out << "\n[ERRO] Não foi possível remover o tecido.";
         }
     } else {
-        out << "\n[AVISO] Remocao cancelada.";
+        out << "\n[AVISO] Remoção cancelada.";
     }
 
     delete tecidoAtual;

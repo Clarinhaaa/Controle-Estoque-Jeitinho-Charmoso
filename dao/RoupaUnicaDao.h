@@ -1,10 +1,13 @@
 #ifndef ROUPAUNICADAO_H
 #define ROUPAUNICADAO_H
 
-class RoupaUnicaDao
+#include "dao/RoupaDao.h"
+
+class RoupaUnicaDao : public RoupaDao
 {
 public:
-    RoupaUnicaDao();
+    RoupaUnicaDao() : RoupaDao() {};
+    ~RoupaUnicaDao() {}
 };
 
 #endif // ROUPAUNICADAO_H

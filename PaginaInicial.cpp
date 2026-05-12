@@ -1,6 +1,7 @@
 #include "PaginaInicial.h"
 #include "dao/RoupaConjuntoDao.h" // Verifique se o nome do arquivo na pasta Headers/dao é este mesmo
 #include <iostream>
+#include "view/TecidoView.h"
 
 using namespace std;
 
@@ -54,6 +55,40 @@ void PaginaInicial::menuExcluirConjunto() {
             cout << ">>> SUCESSO: O conjunto foi removido do sistema." << endl;
         } else {
             cout << ">>> ERRO: Nao foi possivel remover. Verifique se o ID existe." << endl;
+=======
+    QTextStream in(stdin);
+    QTextStream out(stdout);
+    TecidoView teciView;
+
+    while(numInput != 4) {
+        out << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+            << "‧₊˚❀༉‧₊˚. CONTROLE DE ESTOQUE: JEITINHO CHARMOSO ‧₊˚❀༉‧₊˚.\n"
+            << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+        out << "Qual estoque deseja ver?\n";
+        out << "[1] Tecidos\n" << "[2] Roupas\n" << "[3] Conjuntos\n" << "[4] Sair\n";
+        out.flush();
+
+        QString input = in.readLine();
+        numInput = input.toInt();
+        out << "\n\n";
+
+        switch (numInput) {
+            case 1:
+                teciView.load();
+                break;
+            case 2:
+                // roupaView.load();
+                break;
+            case 3:
+                // conjuntoView.load();
+                break;
+            case 4:
+                out << "Encerrando...\n";
+                break;
+            default:
+                out << "\033[H\033[J";
+                out << "[AVISO] Resposta inválida. Tente novamente:\n";
+                break;
         }
     } else {
         cout << ">>> OPERACAO CANCELADA. O conjunto permanece no banco." << endl;

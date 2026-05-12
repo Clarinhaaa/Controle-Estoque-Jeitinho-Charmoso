@@ -8,3 +8,5 @@ bool RoupaConjuntoDao::removerConjunto(int id) {
     query.bindValue(":id", id);
     return query.exec();
 }
+=======
+
