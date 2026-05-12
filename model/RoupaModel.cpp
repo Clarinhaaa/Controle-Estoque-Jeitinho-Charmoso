@@ -13,5 +13,9 @@ RoupaModel::RoupaModel(int id, const QString &nome, const QString &tipo, const Q
 
 QString RoupaModel::toString() {
     QString custoFormatado = QString::number(custo, 'f', 2);
-    return QString("ID: %1 | %2 | %3").arg(QString::number(id), nome, tipo);
+
+    QString str = QString("ID: %1\n%2 %3 - %4\nFornecedor: %5\nEstoque: %6\nCusto: R$%7\n")
+    .arg(QString::number(id), tipo, nome, tamanho, fornecedor, QString::number(estoque), custoFormatado);
+
+    return str;
 }

@@ -11,10 +11,8 @@ public:
     RoupaModel(int id, const QString &nome, const QString &tipo, const QString &tamanho, const QString &fornecedor, int estoque, float custo, int idTecido);
     virtual ~RoupaModel() {}
 
-    // RF013: CAMPOS FIXOS
     static inline const QStringList OPCOES_TIPO = {"Camisa", "Short", "Vestido"};
-    static inline const QStringList OPCOES_TAMANHO = {"P", "M", "G", "GG", "Único"};
-    // ------------------------------------------------------------
+    static inline const QStringList OPCOES_TAMANHO = {"2", "4", "6", "8", "10", "12", "14", "16"};
 
     int getId() const { return this->id; }
     void setId(int id) { this->id = id; }
