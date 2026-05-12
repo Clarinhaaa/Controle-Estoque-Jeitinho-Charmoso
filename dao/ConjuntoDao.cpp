@@ -44,6 +44,24 @@ ConjuntoModel* ConjuntoDao::getById(int id) {
     return conjunto;
 }
 
+QList<ConjuntoModel*> ConjuntoDao::getConjuntosByRoupa(int idRoupa) {
+    // busca roupas relacionadas ao conjunto a partir da tabela Conjunto_has_Roupa
+    QSqlQuery query;
+    query.prepare("SELECT c.id_conjunto FROM Conjunto c, Conjunto_has_Roupa cr WHERE c.id_conjunto = cr.id_conjunto_roupa AND cr.id_roupa_conjunto = :id");
+    query.bindValue(":id", idRoupa);
+
+    QList<ConjuntoModel*> lista;
+    if (query.exec()) {
+        while (query.next()) {
+            int idConjunto = query.value(0).toInt();
+            ConjuntoModel* r = this->getById(idConjunto);
+            lista.append(r);
+        }
+    }
+
+    return lista;
+}
+
 bool ConjuntoDao::remove(int id) {
     QSqlQuery queryCon;
     queryCon.prepare("DELETE FROM Conjunto WHERE id_conjunto = :id");

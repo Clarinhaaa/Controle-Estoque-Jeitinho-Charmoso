@@ -78,8 +78,7 @@ RoupaModel* RoupaDao::getById(int id) {
 QList<RoupaConjuntoModel*> RoupaDao::getRoupasByConjunto(int idConjunto) {
     // busca roupas relacionadas ao conjunto a partir da tabela Conjunto_has_Roupa
     QSqlQuery query;
-    query.prepare("SELECT r.id_roupa FROM Roupa r, Conjunto_has_Roupa cr"
-                  "WHERE r.id_roupa = cr.id_roupa_conjunto AND cr.id_conjunto_roupa = :id");
+    query.prepare("SELECT r.id_roupa FROM Roupa r, Conjunto_has_Roupa cr WHERE r.id_roupa = cr.id_roupa_conjunto AND cr.id_conjunto_roupa = :id");
     query.bindValue(":id", idConjunto);
 
     QList<RoupaConjuntoModel*> lista;

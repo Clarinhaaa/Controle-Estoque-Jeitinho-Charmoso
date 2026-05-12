@@ -13,6 +13,8 @@ public:
 
     QList<ConjuntoModel*> getAll();
     ConjuntoModel* getById(int id);
+    QList<ConjuntoModel*> getConjuntosByRoupa(int idRoupa);
+
     bool remove(int id);
     QList<QString> verificarEstoqueBaixo();
 };
