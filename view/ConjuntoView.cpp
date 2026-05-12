@@ -2,7 +2,6 @@
 
 void ConjuntoView::load() {
     while(numInput != 5) {
-<<<<<<< HEAD
         out << "~~~~~~~~~~~~~~~~~~~\n"
             << "PÁGINA DE CONJUNTOS\n"
             << "~~~~~~~~~~~~~~~~~~~\n";
@@ -13,29 +12,12 @@ void ConjuntoView::load() {
 
         // busca e imprime todos os conjuntos cadastrados no banco
         this->listaConjuntos = conjDao.getAll();
-        for (RoupaConjuntoModel* conj : std::as_const(listaConjuntos)) {
+        for (ConjuntoModel* conj : std::as_const(listaConjuntos)) {
             out << "___________________\n";
             out << conj->toString();
         }
 
         // exibe o menu de ações disponíveis
-=======
-        out << "~~~~~~~~~~~~~~~~~\n"
-            << "PÁGINA DE TECIDOS\n"
-            << "~~~~~~~~~~~~~~~~~\n";
-
-        // limpa a listaConjuntos sempre que a pagina for carregada novamente
-        qDeleteAll(listaConjuntos);
-        listaConjuntos.clear();
-
-        // imprime os conjuntos cadastrados
-        this->listaConjuntos = conDao.getAll();
-        for (ConjuntoModel* con : std::as_const(listaConjuntos)) {
-            out << "_________________\n";
-            out << con->toString();
-        }
-
->>>>>>> b4d350c06109df522c7ee42226ee271c0e67b4a3
         out << "\nQual operação deseja fazer?\n";
         out << "[1] Novo conjunto\n"
             << "[2] Editar conjunto (pelo ID)\n"
@@ -54,17 +36,11 @@ void ConjuntoView::load() {
             form(false);
             break;
         case 2:
-<<<<<<< HEAD
             // chama o form em modo edição
             form(true);
             break;
         case 3:
             // chama a função criada para remover conjunto pelo id
-=======
-            form(true);
-            break;
-        case 3:
->>>>>>> b4d350c06109df522c7ee42226ee271c0e67b4a3
             remover();
             break;
         case 4:
@@ -80,10 +56,9 @@ void ConjuntoView::load() {
         }
     }
 }
-<<<<<<< HEAD
 
 // pede e valida o ID do conjunto, retornando o objeto do banco
-RoupaConjuntoModel* ConjuntoView::validarId() {
+ConjuntoModel* ConjuntoView::validarId() {
     out << "ID do conjunto a ser manipulado: ";
     out.flush();
 
@@ -104,9 +79,9 @@ RoupaConjuntoModel* ConjuntoView::validarId() {
         id = in.readLine();
     }
 
-    // verifica se o ID corresponde a um conjunto no banco
-    RoupaConjuntoModel* c = conjDao.getById(id.toInt());
-    return c;
+    // TODO: substituir por conjDao.getById() quando o método for implementado no DAO
+    out << "[AVISO] Busca por ID ainda não disponível.\n";
+    return nullptr;
 }
 
 // formulário de cadastro (isEdicao=false) e edição (isEdicao=true)
@@ -117,7 +92,7 @@ void ConjuntoView::form(bool isEdicao) {
         << "~~~~~~~~~~~~~~~~~~~\n\n";
     out.flush();
 
-    RoupaConjuntoModel* novoConj;
+    ConjuntoModel* novoConj;
 
     // caso seja edição, pede o ID do conjunto a ser atualizado
     if (isEdicao) {
@@ -125,12 +100,11 @@ void ConjuntoView::form(bool isEdicao) {
 
         if (novoConj == nullptr) {
             out << "\nID inválido. Busque o ID correto.";
-            delete novoConj;
             retornar();
             return;
         }
     } else {
-        novoConj = new RoupaConjuntoModel();
+        novoConj = new ConjuntoModel();
     }
 
     // --- preenchendo e validando cada campo ---
@@ -141,61 +115,16 @@ void ConjuntoView::form(bool isEdicao) {
     validarVazio(nome);
     novoConj->setNome(nome);
 
-    // exibe as opções de tipo predefinidas no model
-    out << "\nTipo" << ((isEdicao) ? " (valor atual: " + novoConj->getTipo() + ")" : "") << ":\n";
-    for (int i = 0; i < RoupaModel::OPCOES_TIPO.size(); ++i) {
-        out << "[" << (i + 1) << "] " << RoupaModel::OPCOES_TIPO[i] << "\n";
-    }
+    out << "\nPreço: ";
     out.flush();
-    int tipoIdx = in.readLine().toInt();
-    while (tipoIdx < 1 || tipoIdx > RoupaModel::OPCOES_TIPO.size()) {
-        out << "Opção inválida. Tente novamente: ";
-        out.flush();
-        tipoIdx = in.readLine().toInt();
-    }
-    novoConj->setTipo(RoupaModel::OPCOES_TIPO[tipoIdx - 1]);
-
-    // exibe as opções de tamanho predefinidas no model
-    out << "\nTamanho" << ((isEdicao) ? " (valor atual: " + novoConj->getTamanho() + ")" : "") << ":\n";
-    for (int i = 0; i < RoupaModel::OPCOES_TAMANHO.size(); ++i) {
-        out << "[" << (i + 1) << "] " << RoupaModel::OPCOES_TAMANHO[i] << "\n";
-    }
-    out.flush();
-    int tamIdx = in.readLine().toInt();
-    while (tamIdx < 1 || tamIdx > RoupaModel::OPCOES_TAMANHO.size()) {
-        out << "Opção inválida. Tente novamente: ";
-        out.flush();
-        tamIdx = in.readLine().toInt();
-    }
-    novoConj->setTamanho(RoupaModel::OPCOES_TAMANHO[tamIdx - 1]);
-
-    out << "\nFornecedor" << ((isEdicao) ? " (valor atual: " + novoConj->getFornecedor() + ")" : "") << ": ";
-    out.flush();
-    QString fornecedor = in.readLine();
-    validarVazio(fornecedor);
-    novoConj->setFornecedor(fornecedor);
-
-    out << "\nCusto" << ((isEdicao) ? " (valor atual: " + QString::number(novoConj->getCusto()) + ")" : "") << ": ";
-    out.flush();
-    QString custo = in.readLine();
-    validarVazio(custo);
-    while (!custo.toFloat() || custo.toFloat() < 0) {
+    QString preco = in.readLine();
+    validarVazio(preco);
+    while (!preco.toFloat() || preco.toFloat() < 0) {
         out << "Escreva um número positivo. Tente novamente: ";
         out.flush();
-        custo = in.readLine();
+        preco = in.readLine();
     }
-    novoConj->setCusto(custo.toFloat());
-
-    out << "\nID do Tecido" << ((isEdicao) ? " (valor atual: " + QString::number(novoConj->getIdTecido()) + ")" : "") << ": ";
-    out.flush();
-    QString idTecido = in.readLine();
-    validarVazio(idTecido);
-    while (!idTecido.toInt() || idTecido.toInt() < 0) {
-        out << "Escreva um número positivo. Tente novamente: ";
-        out.flush();
-        idTecido = in.readLine();
-    }
-    novoConj->setIdTecido(idTecido.toInt());
+    novoConj->setPreco(preco.toFloat());
 
     // estoque só é definido no cadastro; na edição usa gerenciarEstoque()
     if (!isEdicao) {
@@ -211,20 +140,8 @@ void ConjuntoView::form(bool isEdicao) {
         novoConj->setEstoque(estoque.toInt());
     }
 
-    // salvando no banco
-    if (!isEdicao) {
-        if (conjDao.insert(novoConj)) {
-            out << "\n[SUCESSO] Conjunto cadastrado!";
-        } else {
-            out << "\n[ERRO] Não foi possível realizar o cadastro.";
-        }
-    } else {
-        if (conjDao.update(novoConj)) {
-            out << "\n[SUCESSO] Conjunto atualizado!";
-        } else {
-            out << "\n[ERRO] Não foi possível atualizar o conjunto.";
-        }
-    }
+    // TODO: chamar conjDao.insert() ou conjDao.update() quando implementados no DAO
+    out << "\n[AVISO] Cadastro/edição ainda não disponível — DAO incompleto.\n";
 
     delete novoConj;
     retornar();
@@ -254,49 +171,8 @@ void ConjuntoView::gerenciarEstoque() {
         << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
     out.flush();
 
-    // pede e valida o ID do conjunto
-    RoupaConjuntoModel* conjAtual = validarId();
-
-    if (conjAtual == nullptr) {
-        out << "\nID inválido. Busque o ID correto.";
-        delete conjAtual;
-        retornar();
-        return;
-    }
-
-    out << "\n[1] Aumentar estoque\n[2] Diminuir estoque\n";
-    out.flush();
-
-    int input = in.readLine().toInt();
-    while (input < 1 || input > 2) {
-        out << "\nResposta inválida. Tente novamente: ";
-        out.flush();
-        input = in.readLine().toInt();
-    }
-
-    out << "\nQuantidade (em unidades): ";
-    out.flush();
-    int qtd = in.readLine().toInt();
-    while (qtd <= 0) {
-        out << "\nInsira um número positivo: ";
-        out.flush();
-        qtd = in.readLine().toInt();
-    }
-
-    if (input == 1) {
-        conjAtual->aumentarEstoque(qtd);
-    } else {
-        conjAtual->diminuirEstoque(qtd);
-    }
-
-    // salva as alterações de estoque no banco
-    if (conjDao.update(conjAtual)) {
-        out << "[SUCESSO] Estoque atualizado!";
-    } else {
-        out << "[ERRO] Não foi possível atualizar o estoque.";
-    }
-
-    delete conjAtual;
+    // TODO: disponível quando conjDao.getById() e conjDao.update() forem implementados
+    out << "[AVISO] Funcionalidade ainda não disponível — DAO incompleto.\n";
     retornar();
 }
 
@@ -308,37 +184,7 @@ void ConjuntoView::remover() {
         << "~~~~~~~~~~~~~~~~~~\n\n";
     out.flush();
 
-    // pede e valida o ID do conjunto
-    RoupaConjuntoModel* conjAtual = validarId();
-
-    if (conjAtual == nullptr) {
-        out << "\n[AVISO] ID inválido. Busque o ID correto.";
-        delete conjAtual;
-        retornar();
-        return;
-    }
-
-    // mostra o conjunto antes de confirmar a remoção
-    out << "\nConjunto encontrado:\n";
-    out << conjAtual->toString();
-
-    // confirmação para evitar remoção por engano
-    out << "\nTem certeza que deseja remover este conjunto? [s/n]: ";
-    out.flush();
-    QString confirmacao = in.readLine().toLower();
-
-    if (confirmacao == "s") {
-        if (conjDao.remove(conjAtual->getId())) {
-            out << "\n[SUCESSO] Conjunto removido!";
-        } else {
-            out << "\n[ERRO] Não foi possível remover o conjunto.";
-        }
-    } else {
-        out << "\n[AVISO] Remoção cancelada.";
-    }
-
-    delete conjAtual;
+    // TODO: disponível quando conjDao.getById() e conjDao.remove() forem implementados
+    out << "[AVISO] Funcionalidade ainda não disponível — DAO incompleto.\n";
     retornar();
 }
-=======
->>>>>>> b4d350c06109df522c7ee42226ee271c0e67b4a3
