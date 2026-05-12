@@ -11,8 +11,10 @@ TecidoModel::TecidoModel(int id, const QString& estampa, const QString& material
 }
 
 QString TecidoModel::toString() {
+    QString metrosFormatado = QString::number(metros, 'f', 2);
+    QString custoFormatado = QString::number(custo, 'f', 2);
     return QString("ID: %1\nEstampa: %2\nMaterial: %3\nMetros: %4\nCusto: R$%5\n"
-                   ).arg(id).arg(estampa).arg(material).arg(metros, 0, 'f', 2).arg(custo, 0, 'f', 2);
+                   ).arg(QString::number(id), estampa, material, metrosFormatado, custoFormatado);
 }
 
 void TecidoModel::aumentarEstoque(float qtd) {

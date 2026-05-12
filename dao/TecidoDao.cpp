@@ -68,42 +68,6 @@ TecidoModel* TecidoDao::getById(int id)
     return tecido;
 }
 
-// busca tecidos usando uma coluna especifica como filtro
-QList<TecidoModel*> TecidoDao::getByColumn(const QString& coluna, QVariant valor)
-{
-    QSqlQuery query;
-
-    if (coluna == "estampa_tecido") {
-        query.prepare(QString("SELECT * FROM Tecido WHERE %1 LIKE :valor;").arg(coluna));
-        query.bindValue(":valor", QString("%%1%").arg(valor.toString()));
-    } else {
-        if (coluna == "material_tecido") {
-            query.prepare(QString("SELECT * FROM Tecido WHERE %1 = :valor;").arg(coluna));
-        } else {
-            // coluna == "metros_tecido" ou "custo_tecido"
-            query.prepare(QString("SELECT * FROM Tecido WHERE %1 >= :valor;").arg(coluna));
-        }
-
-        query.bindValue(":valor", valor);
-    }
-
-    QList<TecidoModel*> listTecido;
-
-    query.exec();
-    while (query.next()) {
-        TecidoModel* tecido = new TecidoModel();
-        tecido->setId(query.value(0).toInt());
-        tecido->setEstampa(query.value(1).toString());
-        tecido->setMaterial(query.value(2).toString());
-        tecido->setMetros(query.value(3).toFloat());
-        tecido->setCusto(query.value(4).toFloat());
-
-        listTecido.append(tecido);
-    }
-
-    return listTecido;
-}
-
 // insere um tecido novo no banco
 bool TecidoDao::insert(TecidoModel* tecido)
 {

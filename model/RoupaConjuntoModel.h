@@ -8,8 +8,8 @@ class RoupaConjuntoModel : public RoupaModel
 public:
     RoupaConjuntoModel() : RoupaModel() {};
     RoupaConjuntoModel(int id, const QString &nome, const QString &tipo, const QString &tamanho,
-                    const QString &fornecedor, int estoque, float custo, int idTecido)
-        : RoupaModel(id, nome, tipo, tamanho, fornecedor, estoque, custo, idTecido) {}
+                    int estoque, float custo, int idTecido)
+        : RoupaModel(id, nome, tipo, tamanho, estoque, custo, idTecido) {}
     ~RoupaConjuntoModel() {};
 
     QString toString();
