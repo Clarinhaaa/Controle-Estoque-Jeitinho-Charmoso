@@ -18,10 +18,15 @@ private:
     QList<TecidoModel*> listaTecidos;
     TecidoDao teciDao;
 
+    // responsável pelo cadastro e edição
     void form(bool isEdicao);
+    // função que verifica se um campo está vazio
     void validarVazio(QString campo);
+    // verifica se o ID inserido pelo usuário existe no banco
     TecidoModel* validarId();
+    // volta à "página inicial" dos tecidos
     void retornar();
+    // form de edição de estoque
     void gerenciarEstoque();
 
     // remove um tecido pelo id

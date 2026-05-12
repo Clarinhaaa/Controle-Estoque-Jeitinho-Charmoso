@@ -23,15 +23,17 @@ void PaginaInicial::load() {
                 teciView.load();
                 break;
             case 2:
+                // roupaView.load();
                 break;
             case 3:
+                // conjuntoView.load();
                 break;
             case 4:
                 out << "Encerrando...\n";
                 break;
             default:
                 out << "\033[H\033[J";
-                out << "[AVISO] Resposta invalida. Tente novamente:\n";
+                out << "[AVISO] Resposta inválida. Tente novamente:\n";
                 break;
         }
     }
