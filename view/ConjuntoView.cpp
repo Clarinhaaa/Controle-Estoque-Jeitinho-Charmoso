@@ -71,18 +71,7 @@ ConjuntoModel* ConjuntoView::validarId() {
 
     QString id = in.readLine();
     validarVazio(id);
-
-    while (!id.toInt()) {
-        out << "Escreva um número. Tente novamente:";
-        out.flush();
-        id = in.readLine();
-    }
-
-    while (id.toInt() < 0) {
-        out << "Escreva um número positivo. Tente novamente:";
-        out.flush();
-        id = in.readLine();
-    }
+    validarNumPositivo(id);
 
     ConjuntoModel* c = conDao.getById(id.toInt());
     return c;
@@ -131,4 +120,58 @@ void ConjuntoView::remover()
     retornar();
 }
 
-void ConjuntoView::gerenciarEstoque() {}
+void ConjuntoView::gerenciarEstoque() {
+    out << "\033[H\033[J";
+    out << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        << "GERENCIAR ESTOQUE DE CONJUNTOS\n"
+        << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+    out.flush();
+
+    // pedindo o ID
+    ConjuntoModel* conAtual = validarId();
+
+    if (conAtual == nullptr) {
+        out << "\nID inválido. Busque o ID correto.";
+        delete conAtual;
+        retornar();
+        return;
+    }
+
+    out << "\n[1] Aumentar estoque" << "\n[2] Diminuir estoque\n";
+    out.flush();
+
+    QString input = in.readLine();
+    validarVazio(input);
+    validarNumPositivo(input);
+
+    while (input.toInt() < 1 || input.toInt() > 2) {
+        out << "\nResposta inválida. Tente novamente: ";
+        out.flush();
+        input = in.readLine();
+        validarVazio(input);
+        validarNumPositivo(input);
+    }
+
+    out << "\nQuantidade: ";
+    out.flush();
+
+    QString qtd = in.readLine();
+    validarVazio(qtd);
+    validarNumPositivo(qtd);
+
+    if (input.toInt() == 1) {
+        conAtual->aumentarEstoque(qtd.toInt());
+    } else {
+        conAtual->diminuirEstoque(qtd.toInt());
+    }
+
+    // salvando alteracoes no banco - FALTA UPDATE NO DAO
+    /*if (conDao.update(conAtual)) {
+        out << "[SUCESSO] Estoque atualizado!";
+    } else {
+        out << "[ERRO] Não foi possível atualizar o estoque.";
+    }*/
+
+    delete conAtual;
+    retornar();
+}

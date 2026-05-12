@@ -18,7 +18,7 @@ private:
     QList<RoupaModel*> listaRoupas;
     RoupaDao rDao;
 
-    void form(bool isEdicao, bool isUnica);
+    void form(bool isEdicao);
     RoupaModel* validarId();
     void gerenciarEstoque();
     void remover();
