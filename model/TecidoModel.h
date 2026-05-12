@@ -16,19 +16,19 @@ public:
     TecidoModel(int id, const QString& estampa, const QString& material, float metros, float custo);
     ~TecidoModel() {};
 
-    int getId() const { return this->id; }
+    int getId() { return this->id; }
     void setId(int id) { this->id = id; }
 
-    const QString& getEstampa() const { return this->estampa; }
+    const QString& getEstampa() { return this->estampa; }
     void setEstampa(const QString& estampa) {this->estampa = estampa; }
 
-    const QString& getMaterial() const { return this->material; }
+    const QString& getMaterial() { return this->material; }
     void setMaterial(const QString& material) {this->material = material; }
 
-    float getMetros() const { return this->metros; }
+    float getMetros() { return this->metros; }
     void setMetros(float metros) { this->metros = metros; }
 
-    float getCusto() const { return this->custo; }
+    float getCusto() { return this->custo; }
     void setCusto(float custo) { this->custo = custo; }
 
     QString toString();

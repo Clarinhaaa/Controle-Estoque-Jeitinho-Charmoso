@@ -1,20 +1,6 @@
 #include "RoupaConjuntoModel.h"
-#include "model/TecidoModel.h"
-#include "dao/TecidoDao.h"
 
-QString RoupaConjuntoModel::toString() {
-    // Busca o tecido relacionado à roupa
-    TecidoDao teciDao;
-    TecidoModel* tecido = teciDao.getById(idTecido);
+RoupaConjuntoModel::RoupaConjuntoModel() : idConjunto(0) {}
 
-    // Atualiza a roupa única com seu tecido
-    QString str = RoupaModel::toString();
-    str += "Tecido:\n";
-    str += tecido->toString();
-
-    return str;
-}
-
-void RoupaConjuntoModel::aumentarEstoque(int qtd) {}
-
-void RoupaConjuntoModel::diminuirEstoque(int qtd) {}
+int RoupaConjuntoModel::getIdConjunto() const { return idConjunto; }
+void RoupaConjuntoModel::setIdConjunto(int newIdConjunto) { idConjunto = newIdConjunto; }
