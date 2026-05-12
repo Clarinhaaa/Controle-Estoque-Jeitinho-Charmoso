@@ -70,18 +70,7 @@ TecidoModel* TecidoView::validarId() {
 
     QString id = in.readLine();
     validarVazio(id);
-
-    while (!id.toInt()) {
-        out << "Escreva um número. Tente novamente:";
-        out.flush();
-        id = in.readLine();
-    }
-
-    while (id.toInt() < 0) {
-        out << "Escreva um número positivo. Tente novamente:";
-        out.flush();
-        id = in.readLine();
-    }
+    validarNumPositivo(id);
 
     // verifica se o ID corresponde a um tecido no banco
     TecidoModel* t = teciDao.getById(id.toInt());
@@ -132,18 +121,7 @@ void TecidoView::form(bool isEdicao) {
 
         QString metros = in.readLine();
         validarVazio(metros);
-
-        while (!metros.toFloat()) {
-            out << "Escreva um número. Tente novamente:";
-            out.flush();
-            metros = in.readLine();
-        }
-
-        while (metros.toFloat() < 0) {
-            out << "Escreva um número positivo. Tente novamente:";
-            out.flush();
-            metros = in.readLine();
-        }
+        validarNumPositivo(metros);
 
         novoTecido->setMetros(metros.toFloat());
     }
@@ -153,12 +131,7 @@ void TecidoView::form(bool isEdicao) {
 
     QString custo = in.readLine();
     validarVazio(custo);
-
-    while (!custo.toFloat() || custo.toFloat() < 0) {
-        out << "Escreva um número positivo. Tente novamente:";
-        out.flush();
-        custo = in.readLine();
-    }
+    validarNumPositivo(custo);
 
     novoTecido->setCusto(custo.toFloat());
 
@@ -193,7 +166,7 @@ void TecidoView::gerenciarEstoque() {
     TecidoModel* tecidoAtual = validarId();
 
     if (tecidoAtual == nullptr) {
-        out << "\nID invalido. Busque o ID correto.";
+        out << "\nID inválido. Busque o ID correto.";
         delete tecidoAtual;
         retornar();
         return;
@@ -205,7 +178,7 @@ void TecidoView::gerenciarEstoque() {
     int input = in.readLine().toInt();
 
     while (input < 1 || input > 2) {
-        out << "\nResposta invalida. Tente novamente: ";
+        out << "\nResposta inválida. Tente novamente: ";
         out.flush();
         input = in.readLine().toInt();
     }
@@ -213,25 +186,20 @@ void TecidoView::gerenciarEstoque() {
     out << "\nQuantidade (em metros): ";
     out.flush();
 
-    float qtd = in.readLine().toFloat();
-
-    while (qtd <= 0) {
-        out << "\nInsira um numero positivo: ";
-        out.flush();
-        qtd = in.readLine().toFloat();
-    }
+    QString qtd = in.readLine();
+    validarNumPositivo(qtd);
 
     if (input == 1) {
-        tecidoAtual->aumentarEstoque(qtd);
+        tecidoAtual->aumentarEstoque(qtd.toFloat());
     } else {
-        tecidoAtual->diminuirEstoque(qtd);
+        tecidoAtual->diminuirEstoque(qtd.toFloat());
     }
 
     // salvando alteracoes no banco
     if (teciDao.update(tecidoAtual)) {
         out << "[SUCESSO] Estoque atualizado!";
     } else {
-        out << "[ERRO] Nao foi possivel atualizar o estoque.";
+        out << "[ERRO] Não foi possível atualizar o estoque.";
     }
 
     delete tecidoAtual;

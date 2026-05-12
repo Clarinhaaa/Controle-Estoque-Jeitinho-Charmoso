@@ -71,18 +71,7 @@ ConjuntoModel* ConjuntoView::validarId() {
 
     QString id = in.readLine();
     validarVazio(id);
-
-    while (!id.toInt()) {
-        out << "Escreva um número. Tente novamente:";
-        out.flush();
-        id = in.readLine();
-    }
-
-    while (id.toInt() < 0) {
-        out << "Escreva um número positivo. Tente novamente:";
-        out.flush();
-        id = in.readLine();
-    }
+    validarNumPositivo(id);
 
     ConjuntoModel* c = conDao.getById(id.toInt());
     return c;
