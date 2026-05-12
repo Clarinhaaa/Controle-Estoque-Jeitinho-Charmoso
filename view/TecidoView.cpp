@@ -17,6 +17,15 @@ void TecidoView::load() {
             out << teci->toString();
         }
 
+        // mostra tecidos com estoque baixo
+        const QList<QString> listaEstoqueBaixo = teciDao.verificarEstoqueBaixo();
+        if (!listaEstoqueBaixo.empty()) {
+            out << "\n[AVISO] Tecidos com estoque baixo:\n";
+            for (const QString& str : listaEstoqueBaixo) {
+                out << str << "\n";
+            }
+        }
+
         out << "\nQual operação deseja fazer?\n";
         out << "[1] Novo tecido\n"
             << "[2] Editar tecido (pelo ID)\n"

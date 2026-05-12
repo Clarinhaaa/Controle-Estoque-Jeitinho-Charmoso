@@ -78,8 +78,7 @@ RoupaModel* RoupaDao::getById(int id) {
 QList<RoupaConjuntoModel*> RoupaDao::getRoupasByConjunto(int idConjunto) {
     // busca roupas relacionadas ao conjunto a partir da tabela Conjunto_has_Roupa
     QSqlQuery query;
-    query.prepare("SELECT r.id_roupa FROM Roupa r, Conjunto_has_Roupa cr"
-                  "WHERE r.id_roupa = cr.id_roupa_conjunto AND cr.id_conjunto_roupa = :id");
+    query.prepare("SELECT r.id_roupa FROM Roupa r, Conjunto_has_Roupa cr WHERE r.id_roupa = cr.id_roupa_conjunto AND cr.id_conjunto_roupa = :id");
     query.bindValue(":id", idConjunto);
 
     QList<RoupaConjuntoModel*> lista;
@@ -97,14 +96,15 @@ QList<RoupaConjuntoModel*> RoupaDao::getRoupasByConjunto(int idConjunto) {
 // busca o ID e estoque de roupas com estoque <= 5 e armazena os dados numa lista
 QList<QString> RoupaDao::verificarEstoqueBaixo() {
     QSqlQuery query;
-    query.prepare("SELECT id_roupa, estoque_roupa FROM Roupa WHERE estoque_roupa <= 5;");
+    query.prepare("SELECT id_roupa, nome_roupa, estoque_roupa FROM Roupa WHERE estoque_roupa <= 5;");
 
     QList<QString> listaEstoqueBaixo;
     if (query.exec()) {
         while (query.next()) {
             QString id = query.value("id_roupa").toString();
+            QString nome = query.value("nome_roupa").toString();
             QString qtd = query.value("estoque_roupa").toString();
-            listaEstoqueBaixo.append(QString("ID: %1 | Estoque: %2").arg(id, qtd));
+            listaEstoqueBaixo.append(QString("%1 - %2 com %3 itens!").arg(id, nome, qtd));
         } // caso o loop não ocorra, a lista é retornada vazia
     }
     // a lógica para lidar com o resultado será em RoupaView.cpp

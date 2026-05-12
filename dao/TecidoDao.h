@@ -35,6 +35,8 @@ public:
     // remove um tecido do banco pelo id
     // metodo adicionado para implementar o RF018 - remocao de tecidos
     bool remove(int id);
+
+    QList<QString> verificarEstoqueBaixo();
 };
 
 #endif // TECIDODAO_H

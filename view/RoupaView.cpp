@@ -10,11 +10,20 @@ void RoupaView::load() {
         qDeleteAll(listaRoupas);
         listaRoupas.clear();
 
-        // imprime os tecidos cadastrados
+        // imprime as roupas cadastradas
         this->listaRoupas = rDao.getAll();
         for (RoupaModel* r : std::as_const(listaRoupas)) {
             out << "_________________\n";
             out << r->toString();
+        }
+
+        // mostra roupas com estoque baixo
+        const QList<QString> listaEstoqueBaixo = rDao.verificarEstoqueBaixo();
+        if (!listaEstoqueBaixo.empty()) {
+            out << "\n[AVISO] Roupas com estoque baixo:\n";
+            for (const QString& str : listaEstoqueBaixo) {
+                out << str << "\n";
+            }
         }
 
         out << "\nQual operação deseja fazer?\n";
@@ -54,3 +63,7 @@ void RoupaView::load() {
         }
     }
 }
+
+void RoupaView::remover() {}
+
+void RoupaView::gerenciarEstoque() {}

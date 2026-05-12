@@ -44,6 +44,24 @@ ConjuntoModel* ConjuntoDao::getById(int id) {
     return conjunto;
 }
 
+QList<ConjuntoModel*> ConjuntoDao::getConjuntosByRoupa(int idRoupa) {
+    // busca roupas relacionadas ao conjunto a partir da tabela Conjunto_has_Roupa
+    QSqlQuery query;
+    query.prepare("SELECT c.id_conjunto FROM Conjunto c, Conjunto_has_Roupa cr WHERE c.id_conjunto = cr.id_conjunto_roupa AND cr.id_roupa_conjunto = :id");
+    query.bindValue(":id", idRoupa);
+
+    QList<ConjuntoModel*> lista;
+    if (query.exec()) {
+        while (query.next()) {
+            int idConjunto = query.value(0).toInt();
+            ConjuntoModel* r = this->getById(idConjunto);
+            lista.append(r);
+        }
+    }
+
+    return lista;
+}
+
 bool ConjuntoDao::remove(int id) {
     QSqlQuery queryCon;
     queryCon.prepare("DELETE FROM Conjunto WHERE id_conjunto = :id");
@@ -57,4 +75,20 @@ bool ConjuntoDao::remove(int id) {
     bool exec = queryCon.exec() && queryConHasRoupa.exec();
 
     return (exec) ? true : false;
+}
+
+QList<QString> ConjuntoDao::verificarEstoqueBaixo() {
+    QSqlQuery query;
+    query.prepare("SELECT id_conjunto, nome_conjunto, estoque_conjunto FROM Conjunto WHERE estoque_conjunto <= 5;");
+
+    QList<QString> listaEstoqueBaixo;
+    if (query.exec()) {
+        while (query.next()) {
+            QString id = query.value("id_conjunto").toString();
+            QString nome = query.value("nome_conjunto").toString();
+            QString qtd = query.value("estoque_conjunto").toString();
+            listaEstoqueBaixo.append(QString("%1 - %2 com %3 itens!").arg(id, nome, qtd));
+        } // caso o loop não ocorra, a lista é retornada vazia
+    }
+    return listaEstoqueBaixo;
 }

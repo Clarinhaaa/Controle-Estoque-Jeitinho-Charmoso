@@ -15,9 +15,14 @@ QString RoupaUnicaModel::toString() {
     return str;
 }
 
-void RoupaUnicaModel::aumentarEstoque(int qtd) {}
+void RoupaUnicaModel::aumentarEstoque(int qtd) {
+    this->estoque += qtd;
+}
 
-void RoupaUnicaModel::diminuirEstoque(int qtd) {}
+void RoupaUnicaModel::diminuirEstoque(int qtd) {
+    int resultado = this->estoque - qtd;
+    this->estoque = (resultado < 0) ? 0 : resultado;
+}
 
 // calcula o preço de acordo com a estratégia da loja
 float RoupaUnicaModel::calcularPreco(float custoRoupa, float custoTecido) {
