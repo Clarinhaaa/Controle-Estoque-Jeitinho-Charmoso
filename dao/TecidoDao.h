@@ -5,7 +5,7 @@
 #include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include "TecidoModel.h"
+#include "model/TecidoModel.h"
 
 class TecidoDao
 {

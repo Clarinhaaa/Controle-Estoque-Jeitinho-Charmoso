@@ -1,39 +1,31 @@
 #include "dao/RoupaDao.h"
 #include <QSqlQuery>
 #include <QSqlError>
-#include <iostream>
 
-using namespace std;
-
-RoupaDao::RoupaDao() {}
-
-void RoupaDao::verificarEstoqueBaixo() {
+// busca o ID e estoque de roupas com estoque <= 5 e armazena os dados numa lista
+QList<QString> RoupaDao::verificarEstoqueBaixo() {
     QSqlQuery query;
-    query.prepare("SELECT nome_roupa, estoque_roupa FROM Roupa WHERE estoque_roupa <= 5");
+    query.prepare("SELECT id_roupa, estoque_roupa FROM Roupa WHERE estoque_roupa <= 5");
 
-    cout << "\n========== ALERTA DE ESTOQUE BAIXO ==========" << endl;
+    QList<QString> listaEstoqueBaixo;
     if (query.exec()) {
-        bool encontrou = false;
         while (query.next()) {
-            encontrou = true;
-            string nome = query.value("nome_roupa").toString().toStdString();
-            int qtd = query.value("estoque_roupa").toInt();
-            cout << "[!] ITEM: " << nome << " | QTD: " << qtd << endl;
-        }
-        if (!encontrou) cout << "Estoque em niveis seguros." << endl;
+            QString id = query.value("id_roupa").toString();
+            QString qtd = query.value("estoque_roupa").toString();
+            listaEstoqueBaixo.append(QString("ID: %1 | Estoque: %2").arg(id, qtd));
+        } // caso o loop não ocorra, a lista é retornada vazia
     }
-    cout << "=============================================" << endl;
+    // a lógica para lidar com o resultado será em RoupaView.cpp
+    return listaEstoqueBaixo;
 }
 
-// RF005 - Remoção de Roupa
-bool RoupaDao::removerRoupa(int id) {
+// falta lógica de verificar se faz parte de um conjunto (OVERRIDE EM RoupaConjuntoDao)
+bool RoupaDao::remove(int id) {
     QSqlQuery query;
     query.prepare("DELETE FROM Roupa WHERE id_roupa = :id");
     query.bindValue(":id", id);
 
-    if (query.exec()) {
-        cout << "\n[INFO] Tentativa de remocao do ID " << id << " concluida." << endl;
-        return true;
-    }
-    return false;
+    bool exec = query.exec();
+
+    return (exec) ? true : false;
 }

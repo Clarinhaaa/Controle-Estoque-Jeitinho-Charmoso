@@ -1,5 +1,5 @@
 #include "PaginaInicial.h"
-#include "TecidoView.h"
+#include "view/TecidoView.h"
 
 void PaginaInicial::load() {
     QTextStream in(stdin);

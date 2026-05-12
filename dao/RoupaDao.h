@@ -1,16 +1,17 @@
 #ifndef ROUPADAO_H
 #define ROUPADAO_H
 
-#include <QtSql>
-#include <vector>
-#include "model/RoupaModel.h"
+#include <QString>
 
+// deve ser abstrata, assim como RoupaModel
+// assim, cada filha também tem seu próprio DAO
 class RoupaDao {
 public:
-    RoupaDao();
+    RoupaDao() {}
+    ~RoupaDao() {}
 
-    void verificarEstoqueBaixo();   // RF022
-    bool removerRoupa(int id);      // RF005
+    QList<QString> verificarEstoqueBaixo();   // RF022
+    bool remove(int id);                      // RF005
 
 };
 
