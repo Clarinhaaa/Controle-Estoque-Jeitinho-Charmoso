@@ -17,6 +17,15 @@ void ConjuntoView::load() {
             out << con->toString();
         }
 
+        // mostra conjuntos com estoque baixo
+        const QList<QString> listaEstoqueBaixo = conDao.verificarEstoqueBaixo();
+        if (!listaEstoqueBaixo.empty()) {
+            out << "\n[AVISO] Conjuntos com estoque baixo:\n";
+            for (const QString& str : listaEstoqueBaixo) {
+                out << str << "\n";
+            }
+        }
+
         out << "\nQual operação deseja fazer?\n";
         out << "[1] Novo conjunto\n"
             << "[2] Editar conjunto (pelo ID)\n"
@@ -53,6 +62,8 @@ void ConjuntoView::load() {
         }
     }
 }
+
+void ConjuntoView::form(bool isEdicao) {}
 
 ConjuntoModel* ConjuntoView::validarId() {
     out << "ID do conjunto a ser manipulado: ";
@@ -119,3 +130,5 @@ void ConjuntoView::remover()
     delete conAtual;
     retornar();
 }
+
+void ConjuntoView::gerenciarEstoque() {}

@@ -14,6 +14,7 @@ public:
     QList<ConjuntoModel*> getAll();
     ConjuntoModel* getById(int id);
     bool remove(int id);
+    QList<QString> verificarEstoqueBaixo();
 };
 
 #endif // CONJUNTODAO_H

@@ -97,14 +97,15 @@ QList<RoupaConjuntoModel*> RoupaDao::getRoupasByConjunto(int idConjunto) {
 // busca o ID e estoque de roupas com estoque <= 5 e armazena os dados numa lista
 QList<QString> RoupaDao::verificarEstoqueBaixo() {
     QSqlQuery query;
-    query.prepare("SELECT id_roupa, estoque_roupa FROM Roupa WHERE estoque_roupa <= 5;");
+    query.prepare("SELECT id_roupa, nome_roupa, estoque_roupa FROM Roupa WHERE estoque_roupa <= 5;");
 
     QList<QString> listaEstoqueBaixo;
     if (query.exec()) {
         while (query.next()) {
             QString id = query.value("id_roupa").toString();
+            QString nome = query.value("nome_roupa").toString();
             QString qtd = query.value("estoque_roupa").toString();
-            listaEstoqueBaixo.append(QString("ID: %1 | Estoque: %2").arg(id, qtd));
+            listaEstoqueBaixo.append(QString("%1 - %2 com %3 itens!").arg(id, nome, qtd));
         } // caso o loop não ocorra, a lista é retornada vazia
     }
     // a lógica para lidar com o resultado será em RoupaView.cpp

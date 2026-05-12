@@ -58,3 +58,19 @@ bool ConjuntoDao::remove(int id) {
 
     return (exec) ? true : false;
 }
+
+QList<QString> ConjuntoDao::verificarEstoqueBaixo() {
+    QSqlQuery query;
+    query.prepare("SELECT id_conjunto, nome_conjunto, estoque_conjunto FROM Conjunto WHERE estoque_conjunto <= 5;");
+
+    QList<QString> listaEstoqueBaixo;
+    if (query.exec()) {
+        while (query.next()) {
+            QString id = query.value("id_conjunto").toString();
+            QString nome = query.value("nome_conjunto").toString();
+            QString qtd = query.value("estoque_conjunto").toString();
+            listaEstoqueBaixo.append(QString("%1 - %2 com %3 itens!").arg(id, nome, qtd));
+        } // caso o loop não ocorra, a lista é retornada vazia
+    }
+    return listaEstoqueBaixo;
+}

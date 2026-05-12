@@ -137,7 +137,6 @@ QList<int> TecidoDao::getRoupasVinculadas(int id)
 }
 
 // remove um tecido do banco pelo id
-// metodo adicionado para implementar o RF018 - remocao de tecidos
 bool TecidoDao::remove(int id)
 {
     if (isUsadoEmRoupa(id)) {
@@ -151,4 +150,20 @@ bool TecidoDao::remove(int id)
     bool exec = query.exec();
 
     return (exec) ? true : false;
+}
+
+QList<QString> TecidoDao::verificarEstoqueBaixo() {
+    QSqlQuery query;
+    query.prepare("SELECT id_tecido, estampa_tecido, metros_tecido FROM Tecido WHERE metros_tecido <= 5.0;");
+
+    QList<QString> listaEstoqueBaixo;
+    if (query.exec()) {
+        while (query.next()) {
+            QString id = query.value("id_tecido").toString();
+            QString estampa = query.value("estampa_tecido").toString();
+            QString qtd = query.value("metros_tecido").toString();
+            listaEstoqueBaixo.append(QString("%1 - %2 com %3 metros!").arg(id, estampa, qtd));
+        } // caso o loop não ocorra, a lista é retornada vazia
+    }
+    return listaEstoqueBaixo;
 }
