@@ -1,38 +1,38 @@
 #include "PaginaInicial.h"
-#include "TecidoView.h"
+#include "model/RoupaModel.h"
+#include <iostream>
+
+using namespace std;
+
+// Implementação do construtor
+PaginaInicial::PaginaInicial() {
+    // Pode deixar vazio ou inicializar algo
+}
+
 
 void PaginaInicial::load() {
-    QTextStream in(stdin);
-    QTextStream out(stdout);
-    TecidoView teciView;
+    cout << "--- BEM VINDO AO SISTEMA ---" << endl;
+    cadastrarNovaRoupa(); // Chama a função de teste
+}
 
-    while(numInput != 4) {
-        out << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-            << "‧₊˚❀༉‧₊˚. CONTROLE DE ESTOQUE: JEITINHO CHARMOSO ‧₊˚❀༉‧₊˚.\n"
-            << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
-        out << "Qual estoque deseja ver?\n";
-        out << "[1] Tecidos\n" << "[2] Roupas\n" << "[3] Conjuntos\n" << "[4] Sair\n";
-        out.flush();
+// Implementação do Cadastro (RF013)
+void PaginaInicial::cadastrarNovaRoupa() {
+    int escTipo, escTam;
 
-        QString input = in.readLine();
-        numInput = input.toInt();
-        out << "\n\n";
-
-        switch (numInput) {
-            case 1:
-                teciView.load();
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                out << "Encerrando...\n";
-                break;
-            default:
-                out << "\033[H\033[J";
-                out << "[AVISO] Resposta invalida. Tente novamente:\n";
-                break;
-        }
+    cout << "\nSelecione o TIPO (RF013):" << endl;
+    for (int i = 0; i < RoupaModel::OPCOES_TIPO.size(); ++i) {
+        cout << i + 1 << " - " << RoupaModel::OPCOES_TIPO[i].toStdString() << endl;
     }
+    cin >> escTipo;
+
+    cout << "\nSelecione o TAMANHO (RF013):" << endl;
+    for (int i = 0; i < RoupaModel::OPCOES_TAMANHO.size(); ++i) {
+        cout << i + 1 << " - " << RoupaModel::OPCOES_TAMANHO[i].toStdString() << endl;
+    }
+    cin >> escTam;
+
+    QString tipoFinal = RoupaModel::OPCOES_TIPO.value(escTipo - 1, "Outro");
+    QString tamFinal = RoupaModel::OPCOES_TAMANHO.value(escTam - 1, "Unico");
+
+    cout << "\n[OK] Selecionado: " << tipoFinal.toStdString() << " " << tamFinal.toStdString() << endl;
 }

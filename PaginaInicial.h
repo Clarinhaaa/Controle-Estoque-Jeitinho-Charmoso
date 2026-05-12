@@ -1,16 +1,11 @@
 #ifndef PAGINAINICIAL_H
 #define PAGINAINICIAL_H
 
-#include <QString>
-#include <QTextStream>
-#include "Pagina.h"
-
-class PaginaInicial : public Pagina
-{
+class PaginaInicial {
 public:
-    PaginaInicial() : Pagina() {};
-    ~PaginaInicial() {};
+    PaginaInicial();
     void load();
+    void cadastrarNovaRoupa();
 };
 
-#endif // PAGINAINICIAL_H
+#endif

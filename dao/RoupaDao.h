@@ -1,10 +1,16 @@
 #ifndef ROUPADAO_H
 #define ROUPADAO_H
 
-class RoupaDao
-{
+#include <QtSql>
+#include "model/RoupaModel.h"
+
+class RoupaDao {
 public:
     RoupaDao();
+
+
+    void verificarEstoqueBaixo();   // RF022
+    bool removerRoupa(int id);      // RF005
 };
 
-#endif // ROUPADAO_H
+#endif
