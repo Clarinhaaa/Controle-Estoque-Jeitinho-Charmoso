@@ -1,10 +1,13 @@
 #ifndef ROUPACONJUNTODAO_H
 #define ROUPACONJUNTODAO_H
 
-class RoupaConjuntoDao
+#include "dao/RoupaDao.h"
+
+class RoupaConjuntoDao : public RoupaDao
 {
 public:
-    RoupaConjuntoDao();
+    RoupaConjuntoDao() : RoupaDao() {};
+    ~RoupaConjuntoDao() {}
 };
 
 #endif // ROUPACONJUNTODAO_H

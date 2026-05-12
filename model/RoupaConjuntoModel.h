@@ -1,7 +1,7 @@
 #ifndef ROUPACONJUNTOMODEL_H
 #define ROUPACONJUNTOMODEL_H
 
-#include "RoupaModel.h"
+#include "model/RoupaModel.h"
 
 class RoupaConjuntoModel : public RoupaModel
 {

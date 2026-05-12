@@ -1,6 +1,6 @@
 #include "RoupaConjuntoModel.h"
-#include "TecidoModel.h"
-#include "TecidoDao.h"
+#include "model/TecidoModel.h"
+#include "dao/TecidoDao.h"
 
 QString RoupaConjuntoModel::toString() {
     // Busca o tecido relacionado à roupa
