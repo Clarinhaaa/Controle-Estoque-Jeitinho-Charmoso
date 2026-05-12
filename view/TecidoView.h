@@ -3,8 +3,8 @@
 
 #include <QTextStream>
 #include "Pagina.h"
-#include "TecidoModel.h"
-#include "TecidoDao.h"
+#include "model/TecidoModel.h"
+#include "dao/TecidoDao.h"
 
 class TecidoView : public Pagina
 {
