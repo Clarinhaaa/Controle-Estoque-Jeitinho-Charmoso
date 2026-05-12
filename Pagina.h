@@ -47,6 +47,9 @@ protected:
     }
 
     virtual void load() = 0;
+    void form(bool isEdicao);
+    void gerenciarEstoque();
+    void remover();
 };
 
 #endif // PAGINA_H

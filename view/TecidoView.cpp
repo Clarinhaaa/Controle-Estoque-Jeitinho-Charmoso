@@ -175,12 +175,16 @@ void TecidoView::gerenciarEstoque() {
     out << "\n[1] Aumentar estoque" << "\n[2] Diminuir estoque\n";
     out.flush();
 
-    int input = in.readLine().toInt();
+    QString input = in.readLine();
+    validarVazio(input);
+    validarNumPositivo(input);
 
-    while (input < 1 || input > 2) {
+    while (input.toInt() < 1 || input.toInt() > 2) {
         out << "\nResposta inválida. Tente novamente: ";
         out.flush();
-        input = in.readLine().toInt();
+        input = in.readLine();
+        validarVazio(input);
+        validarNumPositivo(input);
     }
 
     out << "\nQuantidade (em metros): ";
@@ -189,7 +193,7 @@ void TecidoView::gerenciarEstoque() {
     QString qtd = in.readLine();
     validarNumPositivo(qtd);
 
-    if (input == 1) {
+    if (input.toInt() == 1) {
         tecidoAtual->aumentarEstoque(qtd.toFloat());
     } else {
         tecidoAtual->diminuirEstoque(qtd.toFloat());
