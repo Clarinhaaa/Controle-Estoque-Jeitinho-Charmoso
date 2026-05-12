@@ -12,12 +12,26 @@ public:
         out.setEncoding(QStringConverter::Utf8);
     }
     virtual ~Pagina() {}
-
-    virtual void load() = 0;
 protected:
     int numInput;
     QTextStream in;
     QTextStream out;
+
+    void retornar() {
+        out << "\nPressione Enter para voltar...";
+        out.flush();
+        in.readLine();
+    }
+
+    void validarVazio(QString campo) {
+        while (campo.isEmpty()) {
+            out << "Não deixe o campo vazio. Tente novamente:";
+            out.flush();
+            campo = in.readLine();
+        }
+    }
+
+    virtual void load() = 0;
 };
 
 #endif // PAGINA_H

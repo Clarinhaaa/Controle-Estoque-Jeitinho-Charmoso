@@ -2,6 +2,7 @@
 
 void ConjuntoView::load() {
     while(numInput != 5) {
+<<<<<<< HEAD
         out << "~~~~~~~~~~~~~~~~~~~\n"
             << "PÁGINA DE CONJUNTOS\n"
             << "~~~~~~~~~~~~~~~~~~~\n";
@@ -18,6 +19,23 @@ void ConjuntoView::load() {
         }
 
         // exibe o menu de ações disponíveis
+=======
+        out << "~~~~~~~~~~~~~~~~~\n"
+            << "PÁGINA DE TECIDOS\n"
+            << "~~~~~~~~~~~~~~~~~\n";
+
+        // limpa a listaConjuntos sempre que a pagina for carregada novamente
+        qDeleteAll(listaConjuntos);
+        listaConjuntos.clear();
+
+        // imprime os conjuntos cadastrados
+        this->listaConjuntos = conDao.getAll();
+        for (ConjuntoModel* con : std::as_const(listaConjuntos)) {
+            out << "_________________\n";
+            out << con->toString();
+        }
+
+>>>>>>> b4d350c06109df522c7ee42226ee271c0e67b4a3
         out << "\nQual operação deseja fazer?\n";
         out << "[1] Novo conjunto\n"
             << "[2] Editar conjunto (pelo ID)\n"
@@ -36,11 +54,17 @@ void ConjuntoView::load() {
             form(false);
             break;
         case 2:
+<<<<<<< HEAD
             // chama o form em modo edição
             form(true);
             break;
         case 3:
             // chama a função criada para remover conjunto pelo id
+=======
+            form(true);
+            break;
+        case 3:
+>>>>>>> b4d350c06109df522c7ee42226ee271c0e67b4a3
             remover();
             break;
         case 4:
@@ -56,6 +80,7 @@ void ConjuntoView::load() {
         }
     }
 }
+<<<<<<< HEAD
 
 // pede e valida o ID do conjunto, retornando o objeto do banco
 RoupaConjuntoModel* ConjuntoView::validarId() {
@@ -315,3 +340,5 @@ void ConjuntoView::remover() {
     delete conjAtual;
     retornar();
 }
+=======
+>>>>>>> b4d350c06109df522c7ee42226ee271c0e67b4a3

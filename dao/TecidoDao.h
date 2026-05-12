@@ -1,8 +1,6 @@
 #ifndef TECIDODAO_H
 #define TECIDODAO_H
 
-#include <QSqlDatabase>
-#include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include "model/TecidoModel.h"
@@ -21,9 +19,6 @@ public:
 
     // busca um tecido especifico pelo id
     TecidoModel* getById(int id);
-
-    // busca tecidos usando uma coluna especifica como filtro
-    QList<TecidoModel*> getByColumn(const QString& coluna, QVariant valor);
 
     // cadastra um novo tecido no banco
     bool insert(TecidoModel* tecido);
