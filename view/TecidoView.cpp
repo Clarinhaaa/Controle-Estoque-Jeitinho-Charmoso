@@ -173,20 +173,6 @@ void TecidoView::form(bool isEdicao) {
     retornar();
 }
 
-void TecidoView::validarVazio(QString campo) {
-    while (campo.isEmpty()) {
-        out << "Nao deixe o campo vazio. Tente novamente:";
-        out.flush();
-        campo = in.readLine();
-    }
-}
-
-void TecidoView::retornar() {
-    out << "\nPressione Enter para voltar...";
-    out.flush();
-    in.readLine();
-}
-
 void TecidoView::gerenciarEstoque() {
     out << "\033[H\033[J";
     out << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"

@@ -8,11 +8,14 @@ class RoupaUnicaModel : public RoupaModel
 public:
     RoupaUnicaModel() : RoupaModel() {}
     RoupaUnicaModel(int id, const QString &nome, const QString &tipo, const QString &tamanho,
-                    const QString &fornecedor, int estoque, float custo, int idTecido, float preco)
-        : RoupaModel(id, nome, tipo, tamanho, fornecedor, estoque, custo, idTecido) {
+                    int estoque, float custo, int idTecido, float preco)
+        : RoupaModel(id, nome, tipo, tamanho, estoque, custo, idTecido) {
         this->preco = preco;
     }
     ~RoupaUnicaModel() {};
+
+    float getPreco() { return this->preco; }
+    void setPreco(float preco) { this->preco = preco; }
 
     QString toString();
 

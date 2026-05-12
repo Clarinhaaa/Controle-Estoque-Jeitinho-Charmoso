@@ -8,7 +8,7 @@ class RoupaModel
 {
 public:
     RoupaModel() {}
-    RoupaModel(int id, const QString &nome, const QString &tipo, const QString &tamanho, const QString &fornecedor, int estoque, float custo, int idTecido);
+    RoupaModel(int id, const QString &nome, const QString &tipo, const QString &tamanho, int estoque, float custo, int idTecido);
     virtual ~RoupaModel() {}
 
     static inline const QStringList OPCOES_TIPO = {"Camisa", "Short", "Vestido"};
@@ -25,9 +25,6 @@ public:
 
     QString getTamanho() const { return this->tamanho; }
     void setTamanho(const QString &tamanho) { this->tamanho = tamanho; }
-
-    QString getFornecedor() const { return this->fornecedor; }
-    void setFornecedor(const QString &fornecedor) { this->fornecedor = fornecedor; }
 
     int getEstoque() const { return this->estoque; }
     void setEstoque(int estoque) { this->estoque = estoque; }
@@ -48,7 +45,6 @@ protected:
     QString nome;
     QString tipo;
     QString tamanho;
-    QString fornecedor;
     int estoque;
     float custo;
     int idTecido;
