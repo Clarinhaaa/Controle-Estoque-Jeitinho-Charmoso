@@ -1,10 +1,10 @@
 #ifndef ROUPACONJUNTODAO_H
 #define ROUPACONJUNTODAO_H
+#include <QtSql>
 
-class RoupaConjuntoDao
-{
+class RoupaConjuntoDao {
 public:
     RoupaConjuntoDao();
+    bool removerConjunto(int id); // A promessa do RF012
 };
-
-#endif // ROUPACONJUNTODAO_H
+#endif

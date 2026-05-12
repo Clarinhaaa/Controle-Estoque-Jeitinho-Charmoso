@@ -5,7 +5,7 @@ class PaginaInicial {
 public:
     PaginaInicial();
     void load();
-    void cadastrarNovaRoupa();
+    void menuExcluirConjunto();
 };
 
 #endif
