@@ -37,10 +37,6 @@ int main(int argc, char *argv[]) {
                     "preco_roupa REAL, "
                     "id_conjunto INTEGER)");
 
-    setupQuery.exec("CREATE TABLE IF NOT EXISTS Conjunto ("
-                    "id_conjunto INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    "nome_conjunto TEXT)");
-
     // Loop principal
     PaginaInicial pagInicial;
     pagInicial.load();

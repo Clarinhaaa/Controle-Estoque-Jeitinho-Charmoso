@@ -1,7 +1,6 @@
 #include "PaginaInicial.h"
 #include "TecidoView.h"
 #include "RoupaView.h"
-#include "ConjuntoView.h"
 
 void PaginaInicial::load() {
     QTextStream in(stdin);
@@ -30,11 +29,8 @@ void PaginaInicial::load() {
                 roupaView.load();
             }
                 break;
-            case 3: {
-                ConjuntoView cv;
-                cv.cadastrarConjunto();
+            case 3:
                 break;
-            }
             case 4:
                 out << "Encerrando...\n";
                 break;
