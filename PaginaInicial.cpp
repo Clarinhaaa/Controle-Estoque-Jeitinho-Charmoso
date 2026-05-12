@@ -1,5 +1,6 @@
 #include "PaginaInicial.h"
-#include "view/TecidoView.h"
+#include "TecidoView.h"
+#include "RoupaView.h"
 
 void PaginaInicial::load() {
     QTextStream in(stdin);
@@ -23,17 +24,19 @@ void PaginaInicial::load() {
                 teciView.load();
                 break;
             case 2:
-                // roupaView.load();
+            {
+                RoupaView roupaView;
+                roupaView.load();
+            }
                 break;
             case 3:
-                // conjuntoView.load();
                 break;
             case 4:
                 out << "Encerrando...\n";
                 break;
             default:
                 out << "\033[H\033[J";
-                out << "[AVISO] Resposta inválida. Tente novamente:\n";
+                out << "[AVISO] Resposta invalida. Tente novamente:\n";
                 break;
         }
     }

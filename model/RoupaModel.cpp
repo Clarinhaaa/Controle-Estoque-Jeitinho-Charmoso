@@ -1,21 +1,21 @@
-#include "model/RoupaModel.h"
+#include "RoupaModel.h"
 
-RoupaModel::RoupaModel(int id, const QString &nome, const QString &tipo, const QString &tamanho, const QString &fornecedor, int estoque, float custo, int idTecido) {
-    this->id = id;
-    this->nome = nome;
-    this->tipo = tipo;
-    this->tamanho = tamanho;
-    this->fornecedor = fornecedor;
-    this->estoque = estoque;
-    this->custo = custo;
-    this->idTecido = idTecido;
-}
+RoupaModel::RoupaModel() : id(0), estoque(0), custo(0.0f) {}
 
-QString RoupaModel::toString() {
-    QString custoFormatado = QString::number(custo, 'f', 2);
+int RoupaModel::getId() const { return id; }
+void RoupaModel::setId(int newId) { id = newId; }
 
-    QString str = QString("ID: %1\n%2 %3 - %4\nFornecedor: %5\nEstoque: %6\nCusto: R$%7\n")
-    .arg(QString::number(id), tipo, nome, tamanho, fornecedor, QString::number(estoque), custoFormatado);
+QString RoupaModel::getNome() const { return nome; }
+void RoupaModel::setNome(const QString &newNome) { nome = newNome; }
 
-    return str;
-}
+QString RoupaModel::getTipo() const { return tipo; }
+void RoupaModel::setTipo(const QString &newTipo) { tipo = newTipo; }
+
+QString RoupaModel::getTamanho() const { return tamanho; }
+void RoupaModel::setTamanho(const QString &newTamanho) { tamanho = newTamanho; }
+
+int RoupaModel::getEstoque() const { return estoque; }
+void RoupaModel::setEstoque(int newEstoque) { estoque = newEstoque; }
+
+float RoupaModel::getCusto() const { return custo; }
+void RoupaModel::setCusto(float newCusto) { custo = newCusto; }

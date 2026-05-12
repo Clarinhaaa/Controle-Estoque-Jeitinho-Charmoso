@@ -1,7 +1,7 @@
 #include "TecidoDao.h"
 #include <QSqlError>
 
-// busca todos os tecidos cadastrados
+// Busca todos os tecidos cadastrados
 QList<TecidoModel*> TecidoDao::getAll()
 {
     QSqlQuery query;
@@ -23,7 +23,6 @@ QList<TecidoModel*> TecidoDao::getAll()
     return listTecido;
 }
 
-// busca todos os tecidos que ainda possuem estoque disponivel
 QList<TecidoModel*> TecidoDao::getAllAvailable()
 {
     QSqlQuery query;
@@ -46,7 +45,7 @@ QList<TecidoModel*> TecidoDao::getAllAvailable()
     return listTecido;
 }
 
-// busca um tecido pelo id
+// Busca um tecido pelo ID
 TecidoModel* TecidoDao::getById(int id)
 {
     QSqlQuery query;
@@ -68,22 +67,18 @@ TecidoModel* TecidoDao::getById(int id)
     return tecido;
 }
 
-// busca tecidos usando uma coluna especifica como filtro
-QList<TecidoModel*> TecidoDao::getByColumn(const QString& coluna, QVariant valor)
-{
+// Busca todos os valores de uma coluna
+QList<TecidoModel*> TecidoDao::getByColumn(const QString& coluna, QVariant valor) {
     QSqlQuery query;
-
     if (coluna == "estampa_tecido") {
         query.prepare(QString("SELECT * FROM Tecido WHERE %1 LIKE :valor;").arg(coluna));
         query.bindValue(":valor", QString("%%1%").arg(valor.toString()));
     } else {
         if (coluna == "material_tecido") {
             query.prepare(QString("SELECT * FROM Tecido WHERE %1 = :valor;").arg(coluna));
-        } else {
-            // coluna == "metros_tecido" ou "custo_tecido"
+        } else { // coluna == "metros_tecido" OU "custo_tecido"
             query.prepare(QString("SELECT * FROM Tecido WHERE %1 >= :valor;").arg(coluna));
         }
-
         query.bindValue(":valor", valor);
     }
 
@@ -99,12 +94,13 @@ QList<TecidoModel*> TecidoDao::getByColumn(const QString& coluna, QVariant valor
         tecido->setCusto(query.value(4).toFloat());
 
         listTecido.append(tecido);
+        delete tecido;
     }
 
     return listTecido;
 }
 
-// insere um tecido novo no banco
+// Insere um tecido novo
 bool TecidoDao::insert(TecidoModel* tecido)
 {
     QSqlQuery query;
@@ -114,17 +110,14 @@ bool TecidoDao::insert(TecidoModel* tecido)
     query.bindValue(":material", tecido->getMaterial());
     query.bindValue(":metros", tecido->getMetros());
     query.bindValue(":custo", tecido->getCusto());
-
     bool exec = query.exec();
 
     return (exec) ? true : false;
 }
 
-// atualiza os dados de um tecido existente
 bool TecidoDao::update(TecidoModel* tecido)
 {
     bool exec = false;
-
     if (tecido != nullptr) {
         QSqlQuery query;
         query.prepare("UPDATE Tecido SET estampa_tecido = :estampa, material_tecido = :material, metros_tecido = :metros, custo_tecido = :custo WHERE id_tecido = :id;");
@@ -133,58 +126,8 @@ bool TecidoDao::update(TecidoModel* tecido)
         query.bindValue(":material", tecido->getMaterial());
         query.bindValue(":metros", tecido->getMetros());
         query.bindValue(":custo", tecido->getCusto());
-
         exec = query.exec();
     }
-
-    return (exec) ? true : false;
-}
-
-// verifica se o tecido esta vinculado a alguma roupa
-bool TecidoDao::isUsadoEmRoupa(int id)
-{
-    QSqlQuery query;
-    query.prepare("SELECT COUNT(*) FROM Roupa WHERE id_tecido = :id;");
-    query.bindValue(":id", id);
-
-    if (query.exec() && query.next()) {
-        return query.value(0).toInt() > 0;
-    }
-
-    return false;
-}
-
-// busca os ids das roupas vinculadas a um tecido
-QList<int> TecidoDao::getRoupasVinculadas(int id)
-{
-    QList<int> roupas;
-
-    QSqlQuery query;
-    query.prepare("SELECT id_roupa FROM Roupa WHERE id_tecido = :id;");
-    query.bindValue(":id", id);
-
-    if (query.exec()) {
-        while (query.next()) {
-            roupas.append(query.value(0).toInt());
-        }
-    }
-
-    return roupas;
-}
-
-// remove um tecido do banco pelo id
-// metodo adicionado para implementar o RF018 - remocao de tecidos
-bool TecidoDao::remove(int id)
-{
-    if (isUsadoEmRoupa(id)) {
-        return false;
-    }
-
-    QSqlQuery query;
-    query.prepare("DELETE FROM Tecido WHERE id_tecido = :id;");
-    query.bindValue(":id", id);
-
-    bool exec = query.exec();
 
     return (exec) ? true : false;
 }

@@ -1,13 +1,18 @@
 #ifndef ROUPACONJUNTODAO_H
 #define ROUPACONJUNTODAO_H
 
-#include "dao/RoupaDao.h"
+#include "RoupaDao.h"
+#include "RoupaConjuntoModel.h"
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
 
 class RoupaConjuntoDao : public RoupaDao
 {
 public:
-    RoupaConjuntoDao() : RoupaDao() {};
-    ~RoupaConjuntoDao() {}
+    RoupaConjuntoDao();
+    bool insert(RoupaConjuntoModel &roupa);
 };
 
 #endif // ROUPACONJUNTODAO_H
