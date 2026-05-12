@@ -12,6 +12,8 @@ public:
     ~ConjuntoDao() {}
 
     QList<ConjuntoModel*> getAll();
+    ConjuntoModel* getById(int id);
+    bool remove(int id);
 };
 
 #endif // CONJUNTODAO_H

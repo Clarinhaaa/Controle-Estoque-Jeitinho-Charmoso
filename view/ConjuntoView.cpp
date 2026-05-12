@@ -53,3 +53,69 @@ void ConjuntoView::load() {
         }
     }
 }
+
+ConjuntoModel* ConjuntoView::validarId() {
+    out << "ID do conjunto a ser manipulado: ";
+    out.flush();
+
+    QString id = in.readLine();
+    validarVazio(id);
+
+    while (!id.toInt()) {
+        out << "Escreva um número. Tente novamente:";
+        out.flush();
+        id = in.readLine();
+    }
+
+    while (id.toInt() < 0) {
+        out << "Escreva um número positivo. Tente novamente:";
+        out.flush();
+        id = in.readLine();
+    }
+
+    ConjuntoModel* c = conDao.getById(id.toInt());
+    return c;
+}
+
+void ConjuntoView::remover()
+{
+    out << "\033[H\033[J";
+    out << "~~~~~~~~~~~~~~~~\n"
+        << "REMOVER CONJUNTO\n"
+        << "~~~~~~~~~~~~~~~~\n\n";
+    out.flush();
+
+    // pede e valida o id do conjunto
+    ConjuntoModel* conAtual = validarId();
+
+    if (conAtual == nullptr) {
+        out << "\n[AVISO] ID inválido. Busque o ID correto.";
+        delete conAtual;
+        retornar();
+        return;
+    }
+
+    // mostra o conjunto antes de tentar remover
+    out << "\nConjunto encontrado:\n";
+    out << conAtual->toString();
+
+    // confirmacao para evitar remocao por engano
+    out << "\nTem certeza que deseja remover este conjunto?"
+           "\nAs roupas vinculadas a ele ainda estarão registradas no sistema [s/n]: ";
+    out.flush();
+
+    QString confirmacao = in.readLine().toLower();
+
+    if (confirmacao == "s") {
+        if (conDao.remove(conAtual->getId())) {
+            out << "\n[SUCESSO] Conjunto removido!";
+        } else {
+            out << "\n[ERRO] Não foi possível remover o conjunto.";
+        }
+    } else {
+        out << "\n[AVISO] Remoção cancelada.";
+    }
+
+    delete conAtual;
+    retornar();
+}
