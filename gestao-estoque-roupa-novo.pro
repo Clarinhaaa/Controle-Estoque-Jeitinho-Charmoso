@@ -27,3 +27,6 @@ DISTFILES += \
 HEADERS += \
     Pagina.h \
     PaginaInicial.h
+
+RESOURCES += \
+    resources.qrc
