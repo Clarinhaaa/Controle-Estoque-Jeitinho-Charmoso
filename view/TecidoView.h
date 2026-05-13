@@ -3,24 +3,31 @@
 
 #include <QTextStream>
 #include "Pagina.h"
-#include "TecidoModel.h"
-#include "TecidoDao.h"
+#include "model/TecidoModel.h"
+#include "dao/TecidoDao.h"
 
 class TecidoView : public Pagina
 {
 public:
     TecidoView() : Pagina() {}
     ~TecidoView() {}
+
     void load();
+
 private:
     QList<TecidoModel*> listaTecidos;
     TecidoDao teciDao;
 
+    // responsável pelo cadastro e edição
     void form(bool isEdicao);
-    void validarVazio(QString campo);
+    // verifica se o ID inserido pelo usuário existe no banco
     TecidoModel* validarId();
-    void retornar();
+    // form de edição de estoque
     void gerenciarEstoque();
+
+    // remove um tecido pelo id
+    // metodo adicionado para implementar o RF018 - remocao de tecidos
+    void remover();
 };
 
 #endif // TECIDOVIEW_H

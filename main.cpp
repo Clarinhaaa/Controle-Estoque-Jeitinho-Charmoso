@@ -16,20 +16,23 @@ int main(int argc, char *argv[]) {
         SetConsoleCP(CP_UTF8);
     #endif
 
-    // Inicializando conexão com o banco de dados
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("sqlite_database");
-    if (!db.open()) {
-        qDebug() << db.lastError().text();
-        return -1;
-    }
+        { // bloco para encerrar o banco corretamente
+            // inicializando conexão com o banco de dados
+            QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+            db.setDatabaseName("sqlite_database");
+            if (!db.open()) {
+                qDebug() << db.lastError().text();
+                return -1;
+            }
 
-    // Loop principal
-    PaginaInicial pagInicial;
-    pagInicial.load();
+            // loop principal
+            PaginaInicial pagInicial;
+            pagInicial.load();
 
-    // Quando o usuário decide sair da aplicação
-    db.close();
+            // quando o usuário decide sair da aplicação
+            db.close();
+        }
+
     QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
     return 0;
 }

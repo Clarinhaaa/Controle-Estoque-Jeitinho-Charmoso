@@ -2,13 +2,11 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += \
-    $$PWD/RoupaConjuntoDao.h \
+    $$PWD/ConjuntoDao.h \
     $$PWD/RoupaDao.h \
-    $$PWD/RoupaUnicaDao.h \
     $$PWD/TecidoDao.h
 
 SOURCES += \
-    $$PWD/RoupaConjuntoDao.cpp \
+    $$PWD/ConjuntoDao.cpp \
     $$PWD/RoupaDao.cpp \
-    $$PWD/RoupaUnicaDao.cpp \
     $$PWD/TecidoDao.cpp
