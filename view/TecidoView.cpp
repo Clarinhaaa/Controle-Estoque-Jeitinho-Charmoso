@@ -140,7 +140,7 @@ void TecidoView::form(bool isEdicao) {
         if (teciDao.insert(novoTecido)) {
             out << "[SUCESSO] Tecido cadastrado!";
         } else {
-            out << "[ERRO] Nãoo foi possível realizar o cadastro.";
+            out << "[ERRO] Não foi possível realizar o cadastro.";
         }
     } else {
         if (teciDao.update(novoTecido)) {

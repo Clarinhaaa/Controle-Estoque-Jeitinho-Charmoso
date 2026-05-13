@@ -72,7 +72,7 @@ TecidoModel* TecidoDao::getById(int id)
 bool TecidoDao::insert(TecidoModel* tecido)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO Tecido(estampa_tecido, material_tecido, metros_tecido, custo_tecido)"
+    query.prepare("INSERT INTO Tecido(estampa_tecido, material_tecido, metros_tecido, custo_tecido) "
                   "VALUES (:estampa, :material, :metros, :custo);");
     query.bindValue(":estampa", tecido->getEstampa());
     query.bindValue(":material", tecido->getMaterial());

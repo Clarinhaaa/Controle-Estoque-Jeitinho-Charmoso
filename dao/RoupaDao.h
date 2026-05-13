@@ -13,6 +13,7 @@ public:
     ~RoupaDao() {}
 
     QList<RoupaModel*> getAll();
+    QList<RoupaConjuntoModel*> getAllConjunto();
     RoupaModel* getById(int id);
     // retorna lista de roupas ligadas a um conjunto
     QList<RoupaConjuntoModel*> getRoupasByConjunto(int idConjunto);

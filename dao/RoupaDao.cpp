@@ -41,6 +41,30 @@ QList<RoupaModel*> RoupaDao::getAll()
     return listRoupa;
 }
 
+QList<RoupaConjuntoModel*> RoupaDao::getAllConjunto() {
+    QSqlQuery query;
+    query.prepare("SELECT * FROM Roupa WHERE preco_roupa < 0;");
+
+    QList<RoupaConjuntoModel*> listRoupa;
+
+    query.exec();
+    while (query.next()) {
+        RoupaConjuntoModel* roupa = new RoupaConjuntoModel();
+
+        roupa->setId(query.value(0).toInt());
+        roupa->setNome(query.value(1).toString());
+        roupa->setTipo(query.value(2).toString());
+        roupa->setTamanho(query.value(3).toString());
+        roupa->setEstoque(query.value(4).toInt());
+        roupa->setCusto(query.value(5).toFloat());
+        // setPreco() não é definido em RoupaConjuntoModel
+        roupa->setIdTecido(query.value(7).toInt());
+        listRoupa.append(roupa);
+    }
+
+    return listRoupa;
+}
+
 RoupaModel* RoupaDao::getById(int id) {
     QSqlQuery query;
     query.prepare("SELECT * FROM Roupa WHERE id_roupa = :id;");

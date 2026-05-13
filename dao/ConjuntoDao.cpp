@@ -46,16 +46,27 @@ ConjuntoModel* ConjuntoDao::getById(int id) {
 
 bool ConjuntoDao::insert(ConjuntoModel* conjunto)
 {
-    QSqlQuery query;
-    query.prepare("INSERT INTO Conjunto (nome_conjunto, estoque_conjunto, preco_conjunto)"
+    QSqlQuery queryCon;
+    queryCon.prepare("INSERT INTO Conjunto (nome_conjunto, estoque_conjunto, preco_conjunto) "
                   "VALUES (:nome, :estoque, :preco);");
-    query.bindValue(":nome", conjunto->getNome());
-    query.bindValue(":estoque", conjunto->getEstoque());
-    query.bindValue(":preco", conjunto->getPreco());
-  
-    bool exec = query.exec()
+    queryCon.bindValue(":nome", conjunto->getNome());
+    queryCon.bindValue(":estoque", conjunto->getEstoque());
+    queryCon.bindValue(":preco", conjunto->getPreco());
 
-    return (exec) ? true : false;
+    if (!queryCon.exec()) return false;
+
+    // estabelecendo a relação entre o conjunto e roupas na tabela Conjunto_has_Roupa
+    QSqlQuery queryConHasR;
+    for (RoupaConjuntoModel* r : conjunto->getRoupas()) {
+        queryConHasR.prepare("INSERT INTO Conjunto_has_Roupa (id_conjunto_roupa, id_roupa_conjunto) "
+                             "VALUES (:idCon, :idRo);");
+        queryConHasR.bindValue(":idCon", queryCon.lastInsertId().toInt());
+        queryConHasR.bindValue(":idRo", r->getId());
+    }
+
+    if (!queryConHasR.exec()) return false;
+
+    return true;
 }
 
 // atualiza um conjunto existente no banco pelo ID
@@ -68,9 +79,10 @@ bool ConjuntoDao::update(ConjuntoModel* conjunto)
     query.bindValue(":preco", conjunto->getPreco());
     query.bindValue(":id", conjunto->getId());
 
-    bool exec = query.exec()
+    bool exec = query.exec();
 
     return (exec) ? true : false;
+}
 
 QList<ConjuntoModel*> ConjuntoDao::getConjuntosByRoupa(int idRoupa) {
     // busca roupas relacionadas ao conjunto a partir da tabela Conjunto_has_Roupa
@@ -94,13 +106,10 @@ bool ConjuntoDao::remove(int id) {
     QSqlQuery queryCon;
     queryCon.prepare("DELETE FROM Conjunto WHERE id_conjunto = :id");
     queryCon.bindValue(":id", id);
+    bool exec = queryCon.exec();
 
-    // desvincula o conjunto das roupas, deletando os registros na tabela Conjunto_has_Roupa
-    QSqlQuery queryConHasRoupa;
-    queryConHasRoupa.prepare("DELETE FROM Conjunto_Has_Roupa WHERE id_conjunto_roupa = :id");
-    queryConHasRoupa.bindValue(":id", id);
-
-    bool exec = queryCon.exec() && queryConHasRoupa.exec();
+    // não é necessário tratar a tabela Conjunto_has_Roupa, pois seus atributos
+    // possuem o modificador "ON DELETE CASCADE"
 
     return (exec) ? true : false;
 }

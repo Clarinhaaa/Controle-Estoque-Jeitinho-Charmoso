@@ -1,6 +1,11 @@
 #include "ConjuntoView.h"
+#include "dao/RoupaDao.h"
+#include "model/RoupaModel.h"
 
 void ConjuntoView::load() {
+    RoupaDao rDao;
+    this->listaRoupasConj = rDao.getAllConjunto();
+
     while(numInput != 5) {
         out << "~~~~~~~~~~~~~~~~~~~\n"
             << "PÁGINA DE CONJUNTOS\n"
@@ -11,7 +16,7 @@ void ConjuntoView::load() {
         listaConjuntos.clear();
 
         // busca e imprime todos os conjuntos cadastrados no banco
-        this->listaConjuntos = conjDao.getAll();
+        listaConjuntos = conDao.getAll();
         for (ConjuntoModel* conj : std::as_const(listaConjuntos)) {
             out << "___________________\n";
             out << conj->toString();
@@ -41,14 +46,16 @@ void ConjuntoView::load() {
 
         switch (numInput) {
         case 1:
+            if (this->listaRoupasConj.empty()) {
+                out << "\n[AVISO] Não há nenhuma roupa para colocar em um conjunto! Cadastre uma peça de conjunto antes.";
+                break;
+            }
             form(false);
             break;
         case 2:
-            // chama o form em modo edição
             form(true);
             break;
         case 3:
-            // chama a função criada para remover conjunto pelo id
             remover();
             break;
         case 4:
@@ -93,7 +100,7 @@ void ConjuntoView::form(bool isEdicao) {
 
         if (novoConj == nullptr) {
             out << "\nID inválido. Busque o ID correto.";
-            retornar();
+            this->retornar();
             return;
         }
     } else {
@@ -106,24 +113,56 @@ void ConjuntoView::form(bool isEdicao) {
     validarVazio(nome);
     novoConj->setNome(nome);
 
-    out << "\nPreço: ";
-    out.flush();
-    QString preco = in.readLine();
-    validarVazio(preco);
-    validarNumPositivo(preco);
-    novoConj->setPreco(preco.toFloat());
-
     // estoque só é definido no cadastro; na edição usa gerenciarEstoque()
     if (!isEdicao) {
         out << "\nEstoque inicial (unidades): ";
         out.flush();
         QString estoque = in.readLine();
         validarVazio(estoque);
-        validarNumPositivo(preco);
+        validarNumPositivo(estoque);
         novoConj->setEstoque(estoque.toInt());
     }
 
-    out << "\n[AVISO] Cadastro/edição ainda não disponível — DAO incompleto.\n";
+    out << "Preço" << ((isEdicao) ? " (valor atual: " + QString::number(novoConj->getPreco()) + ")" : "") << ": ";
+    out.flush();
+    QString preco = in.readLine();
+    validarVazio(preco);
+    validarNumPositivo(preco);
+    novoConj->setPreco(preco.toFloat());
+
+    if (!isEdicao) {
+        // pede as roupas para colocar no conjunto
+        out << "Digite os números relacionados às roupas que quer adicionar.\n"
+               "Coloque um a um, apertando Enter.\n"
+               "Quando quiser parar, digite [OK]\n";
+        out << "Roupas disponíveis:\n";
+        for (RoupaConjuntoModel* r : std::as_const(this->listaRoupasConj)) {
+            out << r->getId() << " - " << r->getNome() << "\n";
+        }
+
+        QString input = in.readLine();
+        while (input != "OK") {
+            validarVazio(input);
+            validarNumPositivo(input);
+
+            novoConj->getRoupas().append(listaRoupasConj.at(input.toInt()));
+        }
+    }
+
+    // salvando no banco
+    if (!isEdicao) {
+        if (conDao.insert(novoConj)) {
+            out << "[SUCESSO] Conjunto cadastrado!";
+        } else {
+            out << "[ERRO] Não foi possível realizar o cadastro.";
+        }
+    } else {
+        if (conDao.update(novoConj)) {
+            out << "[SUCESSO] Conjunto atualizado!";
+        } else {
+            out << "[ERRO] Não foi possível atualizar o tecido.";
+        }
+    }
 
     delete novoConj;
     retornar();
