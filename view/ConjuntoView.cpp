@@ -113,16 +113,6 @@ void ConjuntoView::form(bool isEdicao) {
     validarVazio(nome);
     novoConj->setNome(nome);
 
-    // estoque só é definido no cadastro; na edição usa gerenciarEstoque()
-    if (!isEdicao) {
-        out << "\nEstoque inicial (unidades): ";
-        out.flush();
-        QString estoque = in.readLine();
-        validarVazio(estoque);
-        validarNumPositivo(estoque);
-        novoConj->setEstoque(estoque.toInt());
-    }
-
     out << "Preço" << ((isEdicao) ? " (valor atual: " + QString::number(novoConj->getPreco()) + ")" : "") << ": ";
     out.flush();
     QString preco = in.readLine();
@@ -141,12 +131,19 @@ void ConjuntoView::form(bool isEdicao) {
         }
 
         QString input = in.readLine();
+        int menorEstoque = INT_MAX; // define o estoque do conjunto
         while (input != "OK") {
             validarVazio(input);
             validarNumPositivo(input);
 
-            novoConj->getRoupas().append(listaRoupasConj.at(input.toInt()));
+
+            RoupaConjuntoModel* rc = listaRoupasConj.at(input.toInt());
+            if (rc->getEstoque() <= menorEstoque) {
+                menorEstoque = rc->getEstoque();
+            }
+            novoConj->getRoupas().append(rc);
         }
+        novoConj->setEstoque(menorEstoque);
     }
 
     // salvando no banco
