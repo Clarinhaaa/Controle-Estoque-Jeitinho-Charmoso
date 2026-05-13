@@ -29,7 +29,7 @@ ConjuntoModel* ConjuntoDao::getById(int id) {
     QSqlQuery query;
     query.prepare("SELECT * FROM Conjunto WHERE id_conjunto = :id;");
     query.bindValue(":id", id);
-
+  
     ConjuntoModel* conjunto = nullptr;
     if (query.exec()) {
         if (query.next()) {
@@ -43,6 +43,34 @@ ConjuntoModel* ConjuntoDao::getById(int id) {
 
     return conjunto;
 }
+
+bool ConjuntoDao::insert(ConjuntoModel* conjunto)
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO Conjunto (nome_conjunto, estoque_conjunto, preco_conjunto)"
+                  "VALUES (:nome, :estoque, :preco);");
+    query.bindValue(":nome", conjunto->getNome());
+    query.bindValue(":estoque", conjunto->getEstoque());
+    query.bindValue(":preco", conjunto->getPreco());
+  
+    bool exec = query.exec()
+
+    return (exec) ? true : false;
+}
+
+// atualiza um conjunto existente no banco pelo ID
+bool ConjuntoDao::update(ConjuntoModel* conjunto)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE Conjunto SET nome_conjunto = :nome, estoque_conjunto = :estoque, preco_conjunto = :preco WHERE id_conjunto = :id;");
+    query.bindValue(":nome", conjunto->getNome());
+    query.bindValue(":estoque", conjunto->getEstoque());
+    query.bindValue(":preco", conjunto->getPreco());
+    query.bindValue(":id", conjunto->getId());
+
+    bool exec = query.exec()
+
+    return (exec) ? true : false;
 
 QList<ConjuntoModel*> ConjuntoDao::getConjuntosByRoupa(int idRoupa) {
     // busca roupas relacionadas ao conjunto a partir da tabela Conjunto_has_Roupa

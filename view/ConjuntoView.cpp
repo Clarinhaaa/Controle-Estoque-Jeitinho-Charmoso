@@ -2,19 +2,19 @@
 
 void ConjuntoView::load() {
     while(numInput != 5) {
-        out << "~~~~~~~~~~~~~~~~~\n"
-            << "PÁGINA DE TECIDOS\n"
-            << "~~~~~~~~~~~~~~~~~\n";
+        out << "~~~~~~~~~~~~~~~~~~~\n"
+            << "PÁGINA DE CONJUNTOS\n"
+            << "~~~~~~~~~~~~~~~~~~~\n";
 
-        // limpa a listaConjuntos sempre que a pagina for carregada novamente
+        // limpa a listaConjuntos sempre que a página for carregada novamente
         qDeleteAll(listaConjuntos);
         listaConjuntos.clear();
 
-        // imprime os conjuntos cadastrados
-        this->listaConjuntos = conDao.getAll();
-        for (ConjuntoModel* con : std::as_const(listaConjuntos)) {
-            out << "_________________\n";
-            out << con->toString();
+        // busca e imprime todos os conjuntos cadastrados no banco
+        this->listaConjuntos = conjDao.getAll();
+        for (ConjuntoModel* conj : std::as_const(listaConjuntos)) {
+            out << "___________________\n";
+            out << conj->toString();
         }
 
         // mostra conjuntos com estoque baixo
@@ -44,9 +44,11 @@ void ConjuntoView::load() {
             form(false);
             break;
         case 2:
+            // chama o form em modo edição
             form(true);
             break;
         case 3:
+            // chama a função criada para remover conjunto pelo id
             remover();
             break;
         case 4:
@@ -63,8 +65,6 @@ void ConjuntoView::load() {
     }
 }
 
-void ConjuntoView::form(bool isEdicao) {}
-
 ConjuntoModel* ConjuntoView::validarId() {
     out << "ID do conjunto a ser manipulado: ";
     out.flush();
@@ -75,6 +75,58 @@ ConjuntoModel* ConjuntoView::validarId() {
 
     ConjuntoModel* c = conDao.getById(id.toInt());
     return c;
+}
+
+// formulário de cadastro (isEdicao=false) e edição (isEdicao=true)
+void ConjuntoView::form(bool isEdicao) {
+    out << "\033[H\033[J";
+    out << "~~~~~~~~~~~~~~~~~~~\n"
+        << ((!isEdicao) ? "NOVO CONJUNTO\n" : "EDITAR CONJUNTO\n")
+        << "~~~~~~~~~~~~~~~~~~~\n\n";
+    out.flush();
+
+    ConjuntoModel* novoConj;
+
+    // caso seja edição, pede o ID do conjunto a ser atualizado
+    if (isEdicao) {
+        novoConj = validarId();
+
+        if (novoConj == nullptr) {
+            out << "\nID inválido. Busque o ID correto.";
+            retornar();
+            return;
+        }
+    } else {
+        novoConj = new ConjuntoModel();
+    }
+
+    out << "Nome" << ((isEdicao) ? " (valor atual: " + novoConj->getNome() + ")" : "") << ": ";
+    out.flush();
+    QString nome = in.readLine();
+    validarVazio(nome);
+    novoConj->setNome(nome);
+
+    out << "\nPreço: ";
+    out.flush();
+    QString preco = in.readLine();
+    validarVazio(preco);
+    validarNumPositivo(preco);
+    novoConj->setPreco(preco.toFloat());
+
+    // estoque só é definido no cadastro; na edição usa gerenciarEstoque()
+    if (!isEdicao) {
+        out << "\nEstoque inicial (unidades): ";
+        out.flush();
+        QString estoque = in.readLine();
+        validarVazio(estoque);
+        validarNumPositivo(preco);
+        novoConj->setEstoque(estoque.toInt());
+    }
+
+    out << "\n[AVISO] Cadastro/edição ainda não disponível — DAO incompleto.\n";
+
+    delete novoConj;
+    retornar();
 }
 
 void ConjuntoView::remover()
