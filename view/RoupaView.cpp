@@ -10,11 +10,20 @@ void RoupaView::load() {
         qDeleteAll(listaRoupas);
         listaRoupas.clear();
 
-        // imprime os tecidos cadastrados
+        // imprime as roupas cadastradas
         this->listaRoupas = rDao.getAll();
         for (RoupaModel* r : std::as_const(listaRoupas)) {
             out << "_________________\n";
             out << r->toString();
+        }
+
+        // mostra roupas com estoque baixo
+        const QList<QString> listaEstoqueBaixo = rDao.verificarEstoqueBaixo();
+        if (!listaEstoqueBaixo.empty()) {
+            out << "\n[AVISO] Roupas com estoque baixo:\n";
+            for (const QString& str : listaEstoqueBaixo) {
+                out << str << "\n";
+            }
         }
 
         out << "\nQual operação deseja fazer?\n";
@@ -53,4 +62,76 @@ void RoupaView::load() {
             break;
         }
     }
+}
+
+void RoupaView::form(bool isEdicao) {}
+
+RoupaModel* RoupaView::validarId() {
+    out << "ID da roupa a ser manipulada: ";
+    out.flush();
+
+    QString id = in.readLine();
+    validarVazio(id);
+    validarNumPositivo(id);
+
+    RoupaModel* r = rDao.getById(id.toInt());
+    return r;
+}
+
+void RoupaView::remover() {}
+
+void RoupaView::gerenciarEstoque() {
+    out << "\033[H\033[J";
+    out << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        << "GERENCIAR ESTOQUE DE ROUPAS\n"
+        << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+    out.flush();
+
+    // pedindo o ID
+    RoupaModel* roupaAtual = validarId();
+
+    if (roupaAtual == nullptr) {
+        out << "\nID inválido. Busque o ID correto.";
+        delete roupaAtual;
+        retornar();
+        return;
+    }
+
+    out << "\n[1] Aumentar estoque" << "\n[2] Diminuir estoque\n";
+    out.flush();
+
+    QString input = in.readLine();
+    validarVazio(input);
+    validarNumPositivo(input);
+
+    while (input.toInt() < 1 || input.toInt() > 2) {
+        out << "\nResposta inválida. Tente novamente: ";
+        out.flush();
+        input = in.readLine();
+        validarVazio(input);
+        validarNumPositivo(input);
+    }
+
+    out << "\nQuantidade: ";
+    out.flush();
+
+    QString qtd = in.readLine();
+    validarVazio(qtd);
+    validarNumPositivo(qtd);
+
+    if (input.toInt() == 1) {
+        roupaAtual->aumentarEstoque(qtd.toInt());
+    } else {
+        roupaAtual->diminuirEstoque(qtd.toInt());
+    }
+
+    // salvando alteracoes no banco - FALTA UPDATE NO DAO
+    /*if (rDao.update(roupaAtual)) {
+        out << "[SUCESSO] Estoque atualizado!";
+    } else {
+        out << "[ERRO] Não foi possível atualizar o estoque.";
+    }*/
+
+    delete roupaAtual;
+    retornar();
 }

@@ -17,7 +17,15 @@ void ConjuntoView::load() {
             out << conj->toString();
         }
 
-        // exibe o menu de ações disponíveis
+        // mostra conjuntos com estoque baixo
+        const QList<QString> listaEstoqueBaixo = conDao.verificarEstoqueBaixo();
+        if (!listaEstoqueBaixo.empty()) {
+            out << "\n[AVISO] Conjuntos com estoque baixo:\n";
+            for (const QString& str : listaEstoqueBaixo) {
+                out << str << "\n";
+            }
+        }
+
         out << "\nQual operação deseja fazer?\n";
         out << "[1] Novo conjunto\n"
             << "[2] Editar conjunto (pelo ID)\n"
@@ -57,31 +65,16 @@ void ConjuntoView::load() {
     }
 }
 
-// pede e valida o ID do conjunto, retornando o objeto do banco
 ConjuntoModel* ConjuntoView::validarId() {
     out << "ID do conjunto a ser manipulado: ";
     out.flush();
 
     QString id = in.readLine();
     validarVazio(id);
+    validarNumPositivo(id);
 
-    // garante que o valor digitado é um número
-    while (!id.toInt()) {
-        out << "Escreva um número. Tente novamente: ";
-        out.flush();
-        id = in.readLine();
-    }
-
-    // garante que o número é positivo
-    while (id.toInt() < 0) {
-        out << "Escreva um número positivo. Tente novamente: ";
-        out.flush();
-        id = in.readLine();
-    }
-
-    // TODO: substituir por conjDao.getById() quando o método for implementado no DAO
-    out << "[AVISO] Busca por ID ainda não disponível.\n";
-    return nullptr;
+    ConjuntoModel* c = conDao.getById(id.toInt());
+    return c;
 }
 
 // formulário de cadastro (isEdicao=false) e edição (isEdicao=true)
@@ -107,8 +100,6 @@ void ConjuntoView::form(bool isEdicao) {
         novoConj = new ConjuntoModel();
     }
 
-    // --- preenchendo e validando cada campo ---
-
     out << "Nome" << ((isEdicao) ? " (valor atual: " + novoConj->getNome() + ")" : "") << ": ";
     out.flush();
     QString nome = in.readLine();
@@ -119,11 +110,7 @@ void ConjuntoView::form(bool isEdicao) {
     out.flush();
     QString preco = in.readLine();
     validarVazio(preco);
-    while (!preco.toFloat() || preco.toFloat() < 0) {
-        out << "Escreva um número positivo. Tente novamente: ";
-        out.flush();
-        preco = in.readLine();
-    }
+    validarNumPositivo(preco);
     novoConj->setPreco(preco.toFloat());
 
     // estoque só é definido no cadastro; na edição usa gerenciarEstoque()
@@ -132,59 +119,111 @@ void ConjuntoView::form(bool isEdicao) {
         out.flush();
         QString estoque = in.readLine();
         validarVazio(estoque);
-        while (!estoque.toInt() || estoque.toInt() < 0) {
-            out << "Escreva um número positivo. Tente novamente: ";
-            out.flush();
-            estoque = in.readLine();
-        }
+        validarNumPositivo(preco);
         novoConj->setEstoque(estoque.toInt());
     }
 
-    // TODO: chamar conjDao.insert() ou conjDao.update() quando implementados no DAO
     out << "\n[AVISO] Cadastro/edição ainda não disponível — DAO incompleto.\n";
 
     delete novoConj;
     retornar();
 }
 
-// verifica se o campo está vazio e repede enquanto estiver
-void ConjuntoView::validarVazio(QString campo) {
-    while (campo.isEmpty()) {
-        out << "Não deixe o campo vazio. Tente novamente: ";
-        out.flush();
-        campo = in.readLine();
-    }
-}
-
-// aguarda o usuário pressionar Enter antes de voltar à listagem
-void ConjuntoView::retornar() {
-    out << "\nPressione Enter para voltar...";
-    out.flush();
-    in.readLine();
-}
-
-// permite aumentar ou diminuir o estoque de um conjunto pelo ID
-void ConjuntoView::gerenciarEstoque() {
+void ConjuntoView::remover()
+{
     out << "\033[H\033[J";
-    out << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-        << "GERENCIAR ESTOQUE DE CONJUNTOS\n"
-        << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+    out << "~~~~~~~~~~~~~~~~\n"
+        << "REMOVER CONJUNTO\n"
+        << "~~~~~~~~~~~~~~~~\n\n";
     out.flush();
 
-    // TODO: disponível quando conjDao.getById() e conjDao.update() forem implementados
-    out << "[AVISO] Funcionalidade ainda não disponível — DAO incompleto.\n";
+    // pede e valida o id do conjunto
+    ConjuntoModel* conAtual = validarId();
+
+    if (conAtual == nullptr) {
+        out << "\n[AVISO] ID inválido. Busque o ID correto.";
+        delete conAtual;
+        retornar();
+        return;
+    }
+
+    // mostra o conjunto antes de tentar remover
+    out << "\nConjunto encontrado:\n";
+    out << conAtual->toString();
+
+    // confirmacao para evitar remocao por engano
+    out << "\nTem certeza que deseja remover este conjunto?"
+           "\nAs roupas vinculadas a ele ainda estarão registradas no sistema [s/n]: ";
+    out.flush();
+
+    QString confirmacao = in.readLine().toLower();
+
+    if (confirmacao == "s") {
+        if (conDao.remove(conAtual->getId())) {
+            out << "\n[SUCESSO] Conjunto removido!";
+        } else {
+            out << "\n[ERRO] Não foi possível remover o conjunto.";
+        }
+    } else {
+        out << "\n[AVISO] Remoção cancelada.";
+    }
+
+    delete conAtual;
     retornar();
 }
 
-// remove um conjunto do banco pelo ID com confirmação do usuário
-void ConjuntoView::remover() {
+void ConjuntoView::gerenciarEstoque() {
     out << "\033[H\033[J";
-    out << "~~~~~~~~~~~~~~~~~~\n"
-        << "REMOVER CONJUNTO\n"
-        << "~~~~~~~~~~~~~~~~~~\n\n";
+    out << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+        << "GERENCIAR ESTOQUE DE CONJUNTOS\n"
+        << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
     out.flush();
 
-    // TODO: disponível quando conjDao.getById() e conjDao.remove() forem implementados
-    out << "[AVISO] Funcionalidade ainda não disponível — DAO incompleto.\n";
+    // pedindo o ID
+    ConjuntoModel* conAtual = validarId();
+
+    if (conAtual == nullptr) {
+        out << "\nID inválido. Busque o ID correto.";
+        delete conAtual;
+        retornar();
+        return;
+    }
+
+    out << "\n[1] Aumentar estoque" << "\n[2] Diminuir estoque\n";
+    out.flush();
+
+    QString input = in.readLine();
+    validarVazio(input);
+    validarNumPositivo(input);
+
+    while (input.toInt() < 1 || input.toInt() > 2) {
+        out << "\nResposta inválida. Tente novamente: ";
+        out.flush();
+        input = in.readLine();
+        validarVazio(input);
+        validarNumPositivo(input);
+    }
+
+    out << "\nQuantidade: ";
+    out.flush();
+
+    QString qtd = in.readLine();
+    validarVazio(qtd);
+    validarNumPositivo(qtd);
+
+    if (input.toInt() == 1) {
+        conAtual->aumentarEstoque(qtd.toInt());
+    } else {
+        conAtual->diminuirEstoque(qtd.toInt());
+    }
+
+    // salvando alteracoes no banco - FALTA UPDATE NO DAO
+    /*if (conDao.update(conAtual)) {
+        out << "[SUCESSO] Estoque atualizado!";
+    } else {
+        out << "[ERRO] Não foi possível atualizar o estoque.";
+    }*/
+
+    delete conAtual;
     retornar();
 }
