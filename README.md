@@ -3,6 +3,20 @@ Sistema responsável por gerenciar o estoque das roupas vendidas pela loja Jeiti
 
 ---
 
+## Stack tecnológica
+| Fator                               | Ferramenta             |
+|-------------------------------------|------------------------|
+| Ambiente de desenvolvimento         | IDE Qt Creator         |
+| Template de aplicação no Qt Creator | Qt Console Application |
+| Controle de versionamento           | Git + GitHub           |
+| Banco de dados                      | SQLite                 |
+| Diagramas                           | Astah UML              |
+| Gestão do projeto                   | Quadro Kanban no Miro  |
+| Prototipagem                        | Lovable                |
+| LLMs para auxílio de código         | Gemini                 |
+
+---
+
 ## Arquitetura do projeto
 Ela foi baseada em um sistema Model-View, dividida em 3 subspastas:
 
